@@ -154,8 +154,6 @@
             </div>
         </li>
         @endif
-    </ul>
-
     <style>
         .sub-link {
             display: block;
@@ -176,6 +174,10 @@
         }
         .sidebar-link i.bi-chevron-down {
             transition: transform 0.3s;
+        }
+        /* Hide submenus when sidebar is collapsed */
+        #wrapper.sidebar-collapsed .sidebar-item .collapse {
+            display: none !important;
         }
     </style>
     </ul>

@@ -87,8 +87,8 @@ body {
 /* Sidebar menu scrollable area */
 .sidebar-menu {
     flex: 1;
-    overflow-y: auto;
-    overflow-x: hidden;
+    overflow-y: visible;
+    overflow-x: visible;
     padding: .75rem 0 1rem 0;
 }
 
