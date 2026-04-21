@@ -79,7 +79,16 @@
                                 <span class="text-muted">-</span>
                             @endif
                         </td>
-                        <td class="text-center">{{ $i->target_nilai + 0 }} {{ $i->unit_pengukuran }}</td>
+                        <td class="text-center">
+                            @if($i->target_deskripsi)
+                                <span class="fw-medium text-dark">{{ $i->target_deskripsi }}</span>
+                                @if($i->target_nilai)
+                                    <small class="text-muted d-block">({{ $i->target_nilai + 0 }} {{ $i->unit_pengukuran }})</small>
+                                @endif
+                            @else
+                                {{ $i->target_nilai + 0 }} {{ $i->unit_pengukuran }}
+                            @endif
+                        </td>
                         <td class="text-center">
                             @if($i->is_aktif)
                                 <span class="badge bg-success">Aktif</span>

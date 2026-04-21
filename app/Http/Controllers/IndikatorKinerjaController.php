@@ -39,23 +39,25 @@ class IndikatorKinerjaController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'kode'            => 'required|string|max:20|unique:indikator_kinerjas,kode',
-            'nama'            => 'required|string|max:255',
-            'unit_pengukuran' => 'required|string|max:50',
-            'target_nilai'    => 'required|numeric|min:0',
-            'unit_kerja'      => 'required|string|max:100',
-            'standar_id'      => 'nullable|exists:standars,id',
-            'is_aktif'        => 'boolean',
+            'kode'             => 'required|string|max:20|unique:indikator_kinerjas,kode',
+            'nama'             => 'required|string|max:255',
+            'unit_pengukuran'  => 'required|string|max:50',
+            'target_nilai'     => 'nullable|numeric|min:0',
+            'target_deskripsi' => 'nullable|string',
+            'unit_kerja'       => 'required|string|max:100',
+            'standar_id'       => 'nullable|exists:standars,id',
+            'is_aktif'         => 'boolean',
         ]);
 
         IndikatorKinerja::create([
-            'kode'            => strtoupper($request->kode),
-            'nama'            => $request->nama,
-            'unit_pengukuran' => $request->unit_pengukuran,
-            'target_nilai'    => $request->target_nilai,
-            'unit_kerja'      => $request->unit_kerja,
-            'standar_id'      => $request->standar_id,
-            'is_aktif'        => $request->boolean('is_aktif', true),
+            'kode'             => strtoupper($request->kode),
+            'nama'             => $request->nama,
+            'unit_pengukuran'  => $request->unit_pengukuran,
+            'target_nilai'     => $request->target_nilai,
+            'target_deskripsi' => $request->target_deskripsi ?: $request->target_nilai,
+            'unit_kerja'       => $request->unit_kerja,
+            'standar_id'       => $request->standar_id,
+            'is_aktif'         => $request->boolean('is_aktif', true),
         ]);
 
         return redirect()->route('indikator-kinerja.index')
@@ -77,23 +79,25 @@ class IndikatorKinerjaController extends Controller
     public function update(Request $request, IndikatorKinerja $indikator_kinerja)
     {
         $request->validate([
-            'kode'            => 'required|string|max:20|unique:indikator_kinerjas,kode,' . $indikator_kinerja->id,
-            'nama'            => 'required|string|max:255',
-            'unit_pengukuran' => 'required|string|max:50',
-            'target_nilai'    => 'required|numeric|min:0',
-            'unit_kerja'      => 'required|string|max:100',
-            'standar_id'      => 'nullable|exists:standars,id',
-            'is_aktif'        => 'boolean',
+            'kode'             => 'required|string|max:20|unique:indikator_kinerjas,kode,' . $indikator_kinerja->id,
+            'nama'             => 'required|string|max:255',
+            'unit_pengukuran'  => 'required|string|max:50',
+            'target_nilai'     => 'nullable|numeric|min:0',
+            'target_deskripsi' => 'nullable|string',
+            'unit_kerja'       => 'required|string|max:100',
+            'standar_id'       => 'nullable|exists:standars,id',
+            'is_aktif'         => 'boolean',
         ]);
 
         $indikator_kinerja->update([
-            'kode'            => strtoupper($request->kode),
-            'nama'            => $request->nama,
-            'unit_pengukuran' => $request->unit_pengukuran,
-            'target_nilai'    => $request->target_nilai,
-            'unit_kerja'      => $request->unit_kerja,
-            'standar_id'      => $request->standar_id,
-            'is_aktif'        => $request->boolean('is_aktif'),
+            'kode'             => strtoupper($request->kode),
+            'nama'             => $request->nama,
+            'unit_pengukuran'  => $request->unit_pengukuran,
+            'target_nilai'     => $request->target_nilai,
+            'target_deskripsi' => $request->target_deskripsi ?: $request->target_nilai,
+            'unit_kerja'       => $request->unit_kerja,
+            'standar_id'       => $request->standar_id,
+            'is_aktif'         => $request->boolean('is_aktif'),
         ]);
 
         return redirect()->route('indikator-kinerja.index')

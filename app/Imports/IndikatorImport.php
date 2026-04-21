@@ -14,31 +14,48 @@ class IndikatorImport implements ToModel, WithHeadingRow, WithValidation, WithMa
 {
     public function map($row): array
     {
-        // Sanitize target_nilai for Indonesian format: 
-        // 1.000.000,50 -> 1000000.50
         if (isset($row['target_nilai'])) {
-            $value = (string) $row['target_nilai'];
+            $value = trim((string) $row['target_nilai']);
+            
+            // Simpan teks asli ke kolom baru
+            $row['target_deskripsi'] = $value;
+
+            // Handle common empty/invalid placeholders for the numeric field
+            if ($value === '-' || $value === '' || strtolower($value) === 'n/a' || strtolower($value) === 'tbd') {
+                $row['target_nilai'] = null;
+                return $row;
+            }
+
+            // Normalisasi untuk pengambilan angka (Logic tetap dipertahankan untuk target_nilai numeric)
+            $cleanValue = $value;
             // If there's a comma and dots, it's likely Indonesian 1.000.000,50
-            if (strpos($value, ',') !== false && strpos($value, '.') !== false) {
-                $value = str_replace('.', '', $value); // Remove thousand dots
-                $value = str_replace(',', '.', $value); // Change decimal comma to dot
+            if (strpos($cleanValue, ',') !== false && strpos($cleanValue, '.') !== false) {
+                $cleanValue = str_replace('.', '', $cleanValue);
+                $cleanValue = str_replace(',', '.', $cleanValue);
             } 
-            // If only dots, could be 1.000.000 or 1.5 (English)
-            // But in many contexts in Indo, 1.000 is 1000.
-            elseif (strpos($value, '.') !== false && strpos($value, ',') === false) {
-                // If it looks like a thousand separator (3 digits after), assume it's one.
-                // Or just remove All dots if we assume no decimal was needed.
-                // More robust: if it's 1.000 we want 1000.
-                if (preg_match('/\.\d{3}($|\D)/', $value)) {
-                    $value = str_replace('.', '', $value);
+            elseif (strpos($cleanValue, '.') !== false && strpos($cleanValue, ',') === false) {
+                if (preg_match_all('/\.\d{3}(?!\d)/', $cleanValue) === substr_count($cleanValue, '.')) {
+                    $cleanValue = str_replace('.', '', $cleanValue);
                 }
             }
-            // If only comma, it's likely decimal 14,5
-            elseif (strpos($value, ',') !== false) {
-                $value = str_replace(',', '.', $value);
+            elseif (strpos($cleanValue, ',') !== false) {
+                $cleanValue = str_replace(',', '.', $cleanValue);
             }
             
-            $row['target_nilai'] = preg_replace('/[^0-9\.-]/', '', $value);
+            // Ambil karakter angka, titik pertama, dan minus
+            $cleaned = preg_replace('/[^0-9\.-]/', '', $cleanValue);
+            
+            if (substr_count($cleaned, '.') > 1) {
+                $parts = explode('.', $cleaned);
+                $first = array_shift($parts);
+                $cleaned = $first . '.' . implode('', $parts);
+            }
+
+            if ($cleaned === '' || $cleaned === '.' || $cleaned === '-') {
+                $cleaned = null;
+            }
+            
+            $row['target_nilai'] = $cleaned;
         }
         
         return $row;
@@ -56,25 +73,34 @@ class IndikatorImport implements ToModel, WithHeadingRow, WithValidation, WithMa
         }
 
         return new IndikatorKinerja([
-            'kode'            => strtoupper($row['kode']),
-            'nama'            => $row['nama'],
-            'unit_pengukuran' => $row['unit_pengukuran'],
-            'target_nilai'    => (float) $row['target_nilai'],
-            'unit_kerja'      => $row['unit_kerja'],
-            'standar_id'      => $standar?->id,
-            'is_aktif'        => true,
+            'kode'             => strtoupper($row['kode']),
+            'nama'             => $row['nama'],
+            'unit_pengukuran'  => $row['unit_pengukuran'],
+            'target_deskripsi' => $row['target_deskripsi'],
+            'target_nilai'     => $row['target_nilai'],
+            'unit_kerja'       => $row['unit_kerja'],
+            'standar_id'       => $standar?->id,
+            'is_aktif'         => true,
         ]);
     }
 
     public function rules(): array
     {
         return [
-            'kode'            => 'required|string|max:20',
-            'nama'            => 'required|string|max:255',
-            'unit_pengukuran' => 'required|string|max:50',
-            'target_nilai'    => 'required|numeric',
-            'unit_kerja'      => 'required|string|max:100',
-            'kode_standar'    => 'nullable|string',
+            'kode'             => 'required|string|max:20',
+            'nama'             => 'required|string|max:255',
+            'unit_pengukuran'  => 'required|string|max:50',
+            'target_deskripsi' => 'required|string', 
+            'target_nilai'     => 'nullable|numeric',
+            'unit_kerja'       => 'required|string|max:100',
+            'kode_standar'     => 'nullable|string',
+        ];
+    }
+
+    public function customValidationMessages()
+    {
+        return [
+            'target_deskripsi.required' => 'Kolom Target Nilai tidak boleh kosong.',
         ];
     }
 }

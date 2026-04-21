@@ -55,11 +55,20 @@
                                 @endforeach
                             </select>
                         </div>
+                        <div class="col-md-12">
+                            <label class="form-label text-dark fw-semibold">Target Deskripsi</label>
+                            <textarea name="target_deskripsi" rows="2"
+                                class="form-control @error('target_deskripsi') is-invalid @enderror"
+                                placeholder="Contoh: ≥ 80% atau Memenuhi 3 aspek kriteria...">{{ old('target_deskripsi') }}</textarea>
+                            <div class="form-text mt-1 italic small text-muted">Isi kolom ini jika target berupa teks deskriptif seperti pada dokumen standar.</div>
+                            @error('target_deskripsi') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                        </div>
                         <div class="col-md-6">
-                            <label class="form-label">Target Nilai <span class="text-danger">*</span></label>
+                            <label class="form-label">Target Angka <span class="text-muted small">(Opsional)</span></label>
                             <input type="number" name="target_nilai" step="0.01" min="0"
                                 class="form-control @error('target_nilai') is-invalid @enderror"
-                                value="{{ old('target_nilai') }}" placeholder="100" required>
+                                value="{{ old('target_nilai') }}" placeholder="80">
+                            <div class="form-text italic small text-muted">Gunakan untuk tracking grafik (hanya angka).</div>
                             @error('target_nilai') <div class="invalid-feedback">{{ $message }}</div> @enderror
                         </div>
                         <div class="col-md-6">

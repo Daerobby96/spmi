@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class IndikatorKinerja extends Model
 {
     protected $fillable = [
-        'kode', 'nama', 'unit_pengukuran',
+        'kode', 'nama', 'unit_pengukuran', 'target_deskripsi',
         'target_nilai', 'unit_kerja', 'standar_id', 'is_aktif',
     ];
 

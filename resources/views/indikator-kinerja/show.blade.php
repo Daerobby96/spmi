@@ -39,7 +39,16 @@
                     </tr>
                     <tr>
                         <th>Target Nilai</th>
-                        <td class="fw-bold">{{ $indikator->target_nilai }}</td>
+                        <td class="fw-bold">
+                            @if($indikator->target_deskripsi)
+                                <div class="text-dark">{{ $indikator->target_deskripsi }}</div>
+                                @if($indikator->target_nilai)
+                                    <small class="text-muted fw-normal">({{ $indikator->target_nilai + 0 }} {{ $indikator->unit_pengukuran }})</small>
+                                @endif
+                            @else
+                                {{ $indikator->target_nilai + 0 }} {{ $indikator->unit_pengukuran }}
+                            @endif
+                        </td>
                     </tr>
                     <tr>
                         <th>Unit Kerja</th>
