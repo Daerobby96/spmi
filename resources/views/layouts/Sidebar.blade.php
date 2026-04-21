@@ -173,6 +173,12 @@
                 <span>Kinerja Dosen (EDOM)</span>
             </a>
         </li>
+        <li class="sidebar-item {{ request()->routeIs('tracer-study.*') ? 'active' : '' }}">
+            <a href="{{ route('tracer-study.index') }}" class="sidebar-link" data-title="Tracer Study (Alumni)">
+                <i class="bi bi-mortarboard"></i>
+                <span>Tracer Study (Alumni)</span>
+            </a>
+        </li>
 
         {{-- Manajemen (Super Admin) --}}
         @if(auth()->user()->isSuperAdmin())

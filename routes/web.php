@@ -23,6 +23,7 @@ use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\KuesionerController;
 use App\Http\Controllers\DosenKinerjaController;
 use App\Http\Controllers\UserKuesionerController;
+use App\Http\Controllers\TracerStudyController;
 use Illuminate\Support\Facades\Route;
 
 // ─── Public Dashboard ──────────────────────────────────────────────
@@ -120,6 +121,13 @@ Route::middleware(['auth'])->group(function () {
         Route::post('kinerja-dosen/import-edom', [DosenKinerjaController::class, 'importEdom'])->name('kinerja-dosen.import-edom');
         Route::get('kinerja-dosen/{kinerja}', [DosenKinerjaController::class, 'show'])->name('kinerja-dosen.show');
         Route::get('kinerja-dosen/{kinerja}/export-pdf', [DosenKinerjaController::class, 'exportIndividualPdf'])->name('kinerja-dosen.export-pdf');
+
+        // ── Tracer Study (Alumni) ──────────────────────────────────
+        Route::get('tracer-study', [TracerStudyController::class, 'index'])->name('tracer-study.index');
+        Route::get('tracer-study/template', [TracerStudyController::class, 'downloadTemplate'])->name('tracer-study.template');
+        Route::post('tracer-study/import', [TracerStudyController::class, 'import'])->name('tracer-study.import');
+        Route::post('tracer-study/sync-ppepp', [TracerStudyController::class, 'syncPpepp'])->name('tracer-study.sync-ppepp');
+        Route::delete('tracer-study/{tracerStudy}', [TracerStudyController::class, 'destroy'])->name('tracer-study.destroy');
     });
 
     // ── Laporan ────────────────────────────────────────────────────
