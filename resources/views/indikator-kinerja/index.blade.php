@@ -147,7 +147,7 @@
                 <div class='modal-body p-4'>
                     <div class='alert alert-info border-0 shadow-sm'>
                         <i class='bi bi-info-circle-fill me-2'></i>
-                        Pastikan file Excel memiliki heading: <strong>kode, nama, unit_pengukuran, target_nilai, unit_kerja, kode_standar</strong>.
+                        Pastikan file Excel memiliki heading: <strong>kode, nama, unit_pengukuran, target_nilai, target_deskripsi, unit_kerja, kode_standar</strong>.
                     </div>
                     <div class='mb-3 text-center'>
                         <label class='form-label fw-bold d-block mb-2'>Format File Excel</label>

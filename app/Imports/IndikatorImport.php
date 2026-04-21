@@ -14,48 +14,50 @@ class IndikatorImport implements ToModel, WithHeadingRow, WithValidation, WithMa
 {
     public function map($row): array
     {
-        if (isset($row['target_nilai'])) {
-            $value = trim((string) $row['target_nilai']);
+        if (isset($row['target_nilai']) || isset($row['target_deskripsi'])) {
+            $rawNilai = isset($row['target_nilai']) ? trim((string) $row['target_nilai']) : '';
+            $rawDeskripsi = isset($row['target_deskripsi']) ? trim((string) $row['target_deskripsi']) : '';
             
-            // Simpan teks asli ke kolom baru
-            $row['target_deskripsi'] = $value;
+            // Prioritaskan target_deskripsi dari kolom excel, jika kosong ambil dari target_nilai
+            $row['target_deskripsi'] = $rawDeskripsi ?: $rawNilai;
 
+            // Jika nilai target_nilai di excel adalah deskripsi (seperti "≥ 80%"), 
+            // kita tetap proses agar field numeric target_nilai mendapatkan angka murninya
+            $valueForNumeric = $rawNilai;
+            
             // Handle common empty/invalid placeholders for the numeric field
-            if ($value === '-' || $value === '' || strtolower($value) === 'n/a' || strtolower($value) === 'tbd') {
+            if ($valueForNumeric === '-' || $valueForNumeric === '' || strtolower($valueForNumeric) === 'n/a' || strtolower($valueForNumeric) === 'tbd') {
                 $row['target_nilai'] = null;
-                return $row;
-            }
-
-            // Normalisasi untuk pengambilan angka (Logic tetap dipertahankan untuk target_nilai numeric)
-            $cleanValue = $value;
-            // If there's a comma and dots, it's likely Indonesian 1.000.000,50
-            if (strpos($cleanValue, ',') !== false && strpos($cleanValue, '.') !== false) {
-                $cleanValue = str_replace('.', '', $cleanValue);
-                $cleanValue = str_replace(',', '.', $cleanValue);
-            } 
-            elseif (strpos($cleanValue, '.') !== false && strpos($cleanValue, ',') === false) {
-                if (preg_match_all('/\.\d{3}(?!\d)/', $cleanValue) === substr_count($cleanValue, '.')) {
+            } else {
+                // Normalisasi untuk pengambilan angka
+                $cleanValue = $valueForNumeric;
+                if (strpos($cleanValue, ',') !== false && strpos($cleanValue, '.') !== false) {
                     $cleanValue = str_replace('.', '', $cleanValue);
+                    $cleanValue = str_replace(',', '.', $cleanValue);
+                } 
+                elseif (strpos($cleanValue, '.') !== false && strpos($cleanValue, ',') === false) {
+                    if (preg_match_all('/\.\d{3}(?!\d)/', $cleanValue) === substr_count($cleanValue, '.')) {
+                        $cleanValue = str_replace('.', '', $cleanValue);
+                    }
                 }
-            }
-            elseif (strpos($cleanValue, ',') !== false) {
-                $cleanValue = str_replace(',', '.', $cleanValue);
-            }
-            
-            // Ambil karakter angka, titik pertama, dan minus
-            $cleaned = preg_replace('/[^0-9\.-]/', '', $cleanValue);
-            
-            if (substr_count($cleaned, '.') > 1) {
-                $parts = explode('.', $cleaned);
-                $first = array_shift($parts);
-                $cleaned = $first . '.' . implode('', $parts);
-            }
+                elseif (strpos($cleanValue, ',') !== false) {
+                    $cleanValue = str_replace(',', '.', $cleanValue);
+                }
+                
+                $cleaned = preg_replace('/[^0-9\.-]/', '', $cleanValue);
+                
+                if (substr_count($cleaned, '.') > 1) {
+                    $parts = explode('.', $cleaned);
+                    $first = array_shift($parts);
+                    $cleaned = $first . '.' . implode('', $parts);
+                }
 
-            if ($cleaned === '' || $cleaned === '.' || $cleaned === '-') {
-                $cleaned = null;
+                if ($cleaned === '' || $cleaned === '.' || $cleaned === '-') {
+                    $cleaned = null;
+                }
+                
+                $row['target_nilai'] = $cleaned;
             }
-            
-            $row['target_nilai'] = $cleaned;
         }
         
         return $row;

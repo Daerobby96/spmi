@@ -128,7 +128,7 @@ class IndikatorKinerjaController extends Controller
 
     public function downloadTemplate()
     {
-        $headings = ['kode', 'nama', 'unit_pengukuran', 'target_nilai', 'unit_kerja', 'kode_standar'];
+        $headings = ['kode', 'nama', 'unit_pengukuran', 'target_nilai', 'target_deskripsi', 'unit_kerja', 'kode_standar'];
         return Excel::download(new \App\Exports\TemplateExport($headings, 'Template Indikator'), 'template-indikator.xlsx');
     }
 }
