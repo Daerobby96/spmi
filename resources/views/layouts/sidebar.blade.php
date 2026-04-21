@@ -54,7 +54,7 @@
     </div>
 
     <!-- Navigation Menu -->
-    <ul class="sidebar-menu list-unstyled">
+    <ul class="sidebar-menu list-unstyled" id="sidebarAccordion">
 
         {{-- Dashboard --}}
         <li class="sidebar-item {{ request()->routeIs('dashboard') ? 'active' : '' }} group ring-0 outline-none">
@@ -72,7 +72,8 @@
                 <span>Dokumen & Standar</span>
                 <i class="bi bi-chevron-down ms-auto small"></i>
             </a>
-            <div class="collapse {{ request()->routeIs(['dokumen.*', 'standar.*', 'kategori-dokumen.*']) ? 'show' : '' }}" id="menuDokumen">
+            <div class="collapse {{ request()->routeIs(['dokumen.*', 'standar.*', 'kategori-dokumen.*']) ? 'show' : '' }}" 
+                 id="menuDokumen" data-bs-parent="#sidebarAccordion">
                 <ul class="list-unstyled ps-4 pb-2 bg-white/5">
                     <li><a href="{{ route('dokumen.index') }}" class="sub-link {{ request()->routeIs('dokumen.*') ? 'active' : '' }}">Daftar Dokumen</a></li>
                     <li><a href="{{ route('standar.index') }}" class="sub-link {{ request()->routeIs('standar.*') ? 'active' : '' }}">Standar Mutu</a></li>
@@ -91,7 +92,8 @@
                 <span>Siklus PPEPP</span>
                 <i class="bi bi-chevron-down ms-auto small"></i>
             </a>
-            <div class="collapse {{ request()->routeIs(['monitoring.*', 'evaluasi.*', 'audit.*', 'tindak-lanjut.*', 'rtm.*', 'indikator-kinerja.*']) ? 'show' : '' }}" id="menuPPEPP">
+            <div class="collapse {{ request()->routeIs(['monitoring.*', 'evaluasi.*', 'audit.*', 'tindak-lanjut.*', 'rtm.*', 'indikator-kinerja.*']) ? 'show' : '' }}" 
+                 id="menuPPEPP" data-bs-parent="#sidebarAccordion">
                 <ul class="list-unstyled ps-4 pb-2 bg-white/5">
                     @if(auth()->user()->isSuperAdmin())
                         <li><a href="{{ route('indikator-kinerja.index') }}" class="sub-link {{ request()->routeIs('indikator-kinerja.*') ? 'active' : '' }}">Indikator (IKU)</a></li>
@@ -117,7 +119,8 @@
                 <span>Umpan Balik</span>
                 <i class="bi bi-chevron-down ms-auto small"></i>
             </a>
-            <div class="collapse {{ request()->routeIs(['user-kuesioner.*', 'kinerja-dosen.*', 'tracer-study.*']) ? 'show' : '' }}" id="menuFeedback">
+            <div class="collapse {{ request()->routeIs(['user-kuesioner.*', 'kinerja-dosen.*', 'tracer-study.*']) ? 'show' : '' }}" 
+                 id="menuFeedback" data-bs-parent="#sidebarAccordion">
                 <ul class="list-unstyled ps-4 pb-2 bg-white/5">
                     <li><a href="{{ route('user-kuesioner.index') }}" class="sub-link {{ request()->routeIs('user-kuesioner.*') ? 'active' : '' }}">Survei Kepuasan</a></li>
                     <li><a href="{{ route('kinerja-dosen.index') }}" class="sub-link {{ request()->routeIs('kinerja-dosen.*') ? 'active' : '' }}">Kinerja Dosen</a></li>
@@ -143,7 +146,8 @@
                 <span>Administrasi</span>
                 <i class="bi bi-chevron-down ms-auto small"></i>
             </a>
-            <div class="collapse {{ request()->routeIs(['users.*', 'periode.*', 'kuesioner.*', 'settings.*', 'activity-log.*']) ? 'show' : '' }}" id="menuAdmin">
+            <div class="collapse {{ request()->routeIs(['users.*', 'periode.*', 'kuesioner.*', 'settings.*', 'activity-log.*']) ? 'show' : '' }}" 
+                 id="menuAdmin" data-bs-parent="#sidebarAccordion">
                 <ul class="list-unstyled ps-4 pb-2 bg-white/5">
                     <li><a href="{{ route('users.index') }}" class="sub-link {{ request()->routeIs('users.*') ? 'active' : '' }}">User & Role</a></li>
                     <li><a href="{{ route('periode.index') }}" class="sub-link {{ request()->routeIs('periode.*') ? 'active' : '' }}">Periode</a></li>
@@ -154,7 +158,7 @@
             </div>
         </li>
         @endif
-    <style>
+    </ul>style>
         .sub-link {
             display: block;
             padding: 8px 12px;
