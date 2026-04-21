@@ -67,13 +67,13 @@
         {{-- Dokumen Modul --}}
         <li class="sidebar-item">
             <a class="sidebar-link {{ request()->routeIs(['dokumen.*', 'standar.*', 'kategori-dokumen.*']) ? '' : 'collapsed' }}"
-               data-bs-toggle="collapse" href="#menuDokumen">
+               data-bs-toggle="collapse" data-bs-target="#menuDokumen" role="button" aria-expanded="false">
                 <i class="bi bi-folder2-open"></i>
                 <span>Dokumen & Standar</span>
                 <i class="bi bi-chevron-down ms-auto small"></i>
             </a>
             <div class="collapse {{ request()->routeIs(['dokumen.*', 'standar.*', 'kategori-dokumen.*']) ? 'show' : '' }}" id="menuDokumen">
-                <ul class="list-unstyled ps-4">
+                <ul class="list-unstyled ps-4 pb-2 bg-white/5">
                     <li><a href="{{ route('dokumen.index') }}" class="sub-link {{ request()->routeIs('dokumen.*') ? 'active' : '' }}">Daftar Dokumen</a></li>
                     <li><a href="{{ route('standar.index') }}" class="sub-link {{ request()->routeIs('standar.*') ? 'active' : '' }}">Standar Mutu</a></li>
                     @if(auth()->user()->isSuperAdmin())
@@ -86,13 +86,13 @@
         {{-- Siklus PPEPP (AMI & Monev) --}}
         <li class="sidebar-item">
             <a class="sidebar-link {{ request()->routeIs(['monitoring.*', 'evaluasi.*', 'audit.*', 'tindak-lanjut.*', 'rtm.*', 'indikator-kinerja.*']) ? '' : 'collapsed' }}"
-               data-bs-toggle="collapse" href="#menuPPEPP">
+               data-bs-toggle="collapse" data-bs-target="#menuPPEPP" role="button" aria-expanded="false">
                 <i class="bi bi-arrow-repeat"></i>
                 <span>Siklus PPEPP</span>
                 <i class="bi bi-chevron-down ms-auto small"></i>
             </a>
             <div class="collapse {{ request()->routeIs(['monitoring.*', 'evaluasi.*', 'audit.*', 'tindak-lanjut.*', 'rtm.*', 'indikator-kinerja.*']) ? 'show' : '' }}" id="menuPPEPP">
-                <ul class="list-unstyled ps-4">
+                <ul class="list-unstyled ps-4 pb-2 bg-white/5">
                     @if(auth()->user()->isSuperAdmin())
                         <li><a href="{{ route('indikator-kinerja.index') }}" class="sub-link {{ request()->routeIs('indikator-kinerja.*') ? 'active' : '' }}">Indikator (IKU)</a></li>
                     @endif
@@ -112,13 +112,13 @@
         {{-- Umpan Balik --}}
         <li class="sidebar-item">
             <a class="sidebar-link {{ request()->routeIs(['user-kuesioner.*', 'kinerja-dosen.*', 'tracer-study.*']) ? '' : 'collapsed' }}"
-               data-bs-toggle="collapse" href="#menuFeedback">
+               data-bs-toggle="collapse" data-bs-target="#menuFeedback" role="button" aria-expanded="false">
                 <i class="bi bi-chat-heart"></i>
                 <span>Umpan Balik</span>
                 <i class="bi bi-chevron-down ms-auto small"></i>
             </a>
             <div class="collapse {{ request()->routeIs(['user-kuesioner.*', 'kinerja-dosen.*', 'tracer-study.*']) ? 'show' : '' }}" id="menuFeedback">
-                <ul class="list-unstyled ps-4">
+                <ul class="list-unstyled ps-4 pb-2 bg-white/5">
                     <li><a href="{{ route('user-kuesioner.index') }}" class="sub-link {{ request()->routeIs('user-kuesioner.*') ? 'active' : '' }}">Survei Kepuasan</a></li>
                     <li><a href="{{ route('kinerja-dosen.index') }}" class="sub-link {{ request()->routeIs('kinerja-dosen.*') ? 'active' : '' }}">Kinerja Dosen</a></li>
                     <li><a href="{{ route('tracer-study.index') }}" class="sub-link {{ request()->routeIs('tracer-study.*') ? 'active' : '' }}">Tracer Study</a></li>
@@ -138,13 +138,13 @@
         @if(auth()->user()->isSuperAdmin())
         <li class="sidebar-item">
             <a class="sidebar-link {{ request()->routeIs(['users.*', 'periode.*', 'kuesioner.*', 'settings.*', 'activity-log.*']) ? '' : 'collapsed' }}"
-               data-bs-toggle="collapse" href="#menuAdmin">
+               data-bs-toggle="collapse" data-bs-target="#menuAdmin" role="button" aria-expanded="false">
                 <i class="bi bi-gear"></i>
                 <span>Administrasi</span>
                 <i class="bi bi-chevron-down ms-auto small"></i>
             </a>
             <div class="collapse {{ request()->routeIs(['users.*', 'periode.*', 'kuesioner.*', 'settings.*', 'activity-log.*']) ? 'show' : '' }}" id="menuAdmin">
-                <ul class="list-unstyled ps-4">
+                <ul class="list-unstyled ps-4 pb-2 bg-white/5">
                     <li><a href="{{ route('users.index') }}" class="sub-link {{ request()->routeIs('users.*') ? 'active' : '' }}">User & Role</a></li>
                     <li><a href="{{ route('periode.index') }}" class="sub-link {{ request()->routeIs('periode.*') ? 'active' : '' }}">Periode</a></li>
                     <li><a href="{{ route('kuesioner.index') }}" class="sub-link {{ request()->routeIs('kuesioner.*') ? 'active' : '' }}">Manajemen Kuesioner</a></li>
@@ -158,14 +158,14 @@
         .sub-link {
             display: block;
             padding: 8px 12px;
-            color: rgba(255,255,255,0.6);
+            color: #bdc3c7 !important;
             text-decoration: none;
             font-size: 0.85rem;
             border-left: 2px solid transparent;
             transition: all 0.3s;
         }
         .sub-link:hover, .sub-link.active {
-            color: #fff;
+            color: #fff !important;
             background: rgba(255,255,255,0.05);
             border-left: 2px solid #3b82f6;
         }
