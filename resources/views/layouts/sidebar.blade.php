@@ -64,161 +64,120 @@
             </a>
         </li>
 
-        {{-- Dokumen & Standar --}}
-        @if(auth()->user()->canManageDokumen() || auth()->user()->isSuperAdmin())
-        <li class="sidebar-heading">Dokumen & Standar</li>
-
-        <li class="sidebar-item {{ request()->routeIs('dokumen.*') ? 'active' : '' }}">
-            <a href="{{ route('dokumen.index') }}" class="sidebar-link" data-title="Dokumen Mutu">
+        {{-- Dokumen Modul --}}
+        <li class="sidebar-item">
+            <a class="sidebar-link {{ request()->routeIs(['dokumen.*', 'standar.*', 'kategori-dokumen.*']) ? '' : 'collapsed' }}"
+               data-bs-toggle="collapse" href="#menuDokumen">
                 <i class="bi bi-folder2-open"></i>
-                <span>Dokumen Mutu</span>
+                <span>Dokumen & Standar</span>
+                <i class="bi bi-chevron-down ms-auto small"></i>
             </a>
+            <div class="collapse {{ request()->routeIs(['dokumen.*', 'standar.*', 'kategori-dokumen.*']) ? 'show' : '' }}" id="menuDokumen">
+                <ul class="list-unstyled ps-4">
+                    <li><a href="{{ route('dokumen.index') }}" class="sub-link {{ request()->routeIs('dokumen.*') ? 'active' : '' }}">Daftar Dokumen</a></li>
+                    <li><a href="{{ route('standar.index') }}" class="sub-link {{ request()->routeIs('standar.*') ? 'active' : '' }}">Standar Mutu</a></li>
+                    @if(auth()->user()->isSuperAdmin())
+                    <li><a href="{{ route('kategori-dokumen.index') }}" class="sub-link {{ request()->routeIs('kategori-dokumen.*') ? 'active' : '' }}">Kategori</a></li>
+                    @endif
+                </ul>
+            </div>
         </li>
 
-        <li class="sidebar-item {{ request()->routeIs('standar.*') ? 'active' : '' }}">
-            <a href="{{ route('standar.index') }}" class="sidebar-link" data-title="Standar Mutu">
-                <i class="bi bi-bookmark-check"></i>
-                <span>Standar Mutu</span>
-            </a>
-        </li>
-
-        <li class="sidebar-item {{ request()->routeIs('kategori-dokumen.*') ? 'active' : '' }}">
-            <a href="{{ route('kategori-dokumen.index') }}" class="sidebar-link" data-title="Kategori Dokumen">
-                <i class="bi bi-tags"></i>
-                <span>Kategori Dokumen</span>
-            </a>
-        </li>
-        @endif
-
-        {{-- Monitoring & Evaluasi --}}
-        <li class="sidebar-heading">Monitoring & Evaluasi</li>
-
-        @if(auth()->user()->isSuperAdmin())
-        <li class="sidebar-item {{ request()->routeIs('indikator-kinerja.*') ? 'active' : '' }}">
-            <a href="{{ route('indikator-kinerja.index') }}" class="sidebar-link" data-title="Indikator Kinerja">
-                <i class="bi bi-bullseye"></i>
-                <span>Indikator Kinerja</span>
-            </a>
-        </li>
-        @endif
-
-        <li class="sidebar-item {{ request()->routeIs('monitoring.*') ? 'active' : '' }}">
-            <a href="{{ route('monitoring.index') }}" class="sidebar-link" data-title="Monitoring IKU/IKT">
-                <i class="bi bi-bar-chart-line"></i>
-                <span>Monitoring IKU/IKT</span>
-            </a>
-        </li>
-
-        @if(auth()->user()->canManageAudit())
-        <li class="sidebar-item {{ request()->routeIs('evaluasi.*') ? 'active' : '' }}">
-            <a href="{{ route('evaluasi.index') }}" class="sidebar-link" data-title="Evaluasi">
-                <i class="bi bi-graph-up-arrow"></i>
-                <span>Evaluasi</span>
-            </a>
-        </li>
-        @endif
-
-
-        {{-- Audit Mutu Internal --}}
-        @if(auth()->user()->canManageAudit() || auth()->user()->isAuditee())
-        <li class="sidebar-heading">Audit Mutu Internal</li>
-
-        @if(auth()->user()->canManageAudit())
-        <li class="sidebar-item {{ request()->routeIs('audit.*') ? 'active' : '' }}">
-            <a href="{{ route('audit.index') }}" class="sidebar-link" data-title="Pelaksanaan Audit">
-                <i class="bi bi-clipboard2-check"></i>
-                <span>Pelaksanaan Audit</span>
-            </a>
-        </li>
-        @endif
-
-        <li class="sidebar-item {{ request()->routeIs('tindak-lanjut.*') ? 'active' : '' }}">
-            <a href="{{ route('tindak-lanjut.index') }}" class="sidebar-link" data-title="Tindak Lanjut">
+        {{-- Siklus PPEPP (AMI & Monev) --}}
+        <li class="sidebar-item">
+            <a class="sidebar-link {{ request()->routeIs(['monitoring.*', 'evaluasi.*', 'audit.*', 'tindak-lanjut.*', 'rtm.*', 'indikator-kinerja.*']) ? '' : 'collapsed' }}"
+               data-bs-toggle="collapse" href="#menuPPEPP">
                 <i class="bi bi-arrow-repeat"></i>
-                <span>Tindak Lanjut</span>
-                @if($openTemuanCount > 0)
-                    <span class="badge bg-danger ms-auto">{{ $openTemuanCount }}</span>
-                @endif
+                <span>Siklus PPEPP</span>
+                <i class="bi bi-chevron-down ms-auto small"></i>
             </a>
+            <div class="collapse {{ request()->routeIs(['monitoring.*', 'evaluasi.*', 'audit.*', 'tindak-lanjut.*', 'rtm.*', 'indikator-kinerja.*']) ? 'show' : '' }}" id="menuPPEPP">
+                <ul class="list-unstyled ps-4">
+                    @if(auth()->user()->isSuperAdmin())
+                        <li><a href="{{ route('indikator-kinerja.index') }}" class="sub-link {{ request()->routeIs('indikator-kinerja.*') ? 'active' : '' }}">Indikator (IKU)</a></li>
+                    @endif
+                    <li><a href="{{ route('monitoring.index') }}" class="sub-link {{ request()->routeIs('monitoring.*') ? 'active' : '' }}">Monitoring</a></li>
+                    @if(auth()->user()->canManageAudit())
+                    <li><a href="{{ route('evaluasi.index') }}" class="sub-link {{ request()->routeIs('evaluasi.*') ? 'active' : '' }}">Evaluasi</a></li>
+                    @endif
+                    <li><a href="{{ route('audit.index') }}" class="sub-link {{ request()->routeIs('audit.*') ? 'active' : '' }}">Pelaksanaan AMI</a></li>
+                    <li><a href="{{ route('tindak-lanjut.index') }}" class="sub-link {{ request()->routeIs('tindak-lanjut.*') ? 'active' : '' }}">
+                        Tindak Lanjut @if($openTemuanCount > 0) <span class="badge bg-danger ms-1 small px-1">{{ $openTemuanCount }}</span> @endif
+                    </a></li>
+                    <li><a href="{{ route('rtm.index') }}" class="sub-link {{ request()->routeIs('rtm.*') ? 'active' : '' }}">RTM</a></li>
+                </ul>
+            </div>
         </li>
-        <li class="sidebar-item {{ request()->routeIs('rtm.*') ? 'active' : '' }} group">
-            <a href="{{ route('rtm.index') }}" class="sidebar-link group-hover:bg-white/5 transition-all duration-200" data-title="Rapat Tinjauan Manajemen (RTM)">
-                <i class="bi bi-people-fill group-hover:scale-110 transition-transform duration-200"></i>
-                <span>Tinjauan Manajemen (RTM)</span>
+
+        {{-- Umpan Balik --}}
+        <li class="sidebar-item">
+            <a class="sidebar-link {{ request()->routeIs(['user-kuesioner.*', 'kinerja-dosen.*', 'tracer-study.*']) ? '' : 'collapsed' }}"
+               data-bs-toggle="collapse" href="#menuFeedback">
+                <i class="bi bi-chat-heart"></i>
+                <span>Umpan Balik</span>
+                <i class="bi bi-chevron-down ms-auto small"></i>
             </a>
+            <div class="collapse {{ request()->routeIs(['user-kuesioner.*', 'kinerja-dosen.*', 'tracer-study.*']) ? 'show' : '' }}" id="menuFeedback">
+                <ul class="list-unstyled ps-4">
+                    <li><a href="{{ route('user-kuesioner.index') }}" class="sub-link {{ request()->routeIs('user-kuesioner.*') ? 'active' : '' }}">Survei Kepuasan</a></li>
+                    <li><a href="{{ route('kinerja-dosen.index') }}" class="sub-link {{ request()->routeIs('kinerja-dosen.*') ? 'active' : '' }}">Kinerja Dosen</a></li>
+                    <li><a href="{{ route('tracer-study.index') }}" class="sub-link {{ request()->routeIs('tracer-study.*') ? 'active' : '' }}">Tracer Study</a></li>
+                </ul>
+            </div>
         </li>
-        @endif
 
         {{-- Laporan --}}
-        <li class="sidebar-heading">Pelaporan</li>
-
         <li class="sidebar-item {{ request()->routeIs('laporan.*') ? 'active' : '' }}">
-            <a href="{{ route('laporan.index') }}" class="sidebar-link" data-title="Laporan">
+            <a href="{{ route('laporan.index') }}" class="sidebar-link">
                 <i class="bi bi-file-earmark-bar-graph"></i>
-                <span>Laporan</span>
+                <span>Pusat Laporan</span>
             </a>
         </li>
 
-        {{-- Partisipasi User (Survei) --}}
-        <li class="sidebar-heading">Umpan Balik</li>
-        <li class="sidebar-item {{ request()->routeIs('user-kuesioner.*') ? 'active' : '' }}">
-            <a href="{{ route('user-kuesioner.index') }}" class="sidebar-link" data-title="Survei & Kuesioner">
-                <i class="bi bi-clipboard2-data"></i>
-                <span>Survei & Kuesioner</span>
-            </a>
-        </li>
-        <li class="sidebar-item {{ request()->routeIs('kinerja-dosen.*') ? 'active' : '' }}">
-            <a href="{{ route('kinerja-dosen.index') }}" class="sidebar-link" data-title="Kinerja Dosen (EDOM)">
-                <i class="bi bi-person-badge"></i>
-                <span>Kinerja Dosen (EDOM)</span>
-            </a>
-        </li>
-        <li class="sidebar-item {{ request()->routeIs('tracer-study.*') ? 'active' : '' }}">
-            <a href="{{ route('tracer-study.index') }}" class="sidebar-link" data-title="Tracer Study (Alumni)">
-                <i class="bi bi-mortarboard"></i>
-                <span>Tracer Study (Alumni)</span>
-            </a>
-        </li>
-
-        {{-- Manajemen (Super Admin) --}}
+        {{-- Administrasi --}}
         @if(auth()->user()->isSuperAdmin())
-        <li class="sidebar-heading">Administrasi</li>
-
-        <li class="sidebar-item {{ request()->routeIs('users.*') ? 'active' : '' }}">
-            <a href="{{ route('users.index') }}" class="sidebar-link" data-title="Manajemen User">
-                <i class="bi bi-people"></i>
-                <span>Manajemen User</span>
+        <li class="sidebar-item">
+            <a class="sidebar-link {{ request()->routeIs(['users.*', 'periode.*', 'kuesioner.*', 'settings.*', 'activity-log.*']) ? '' : 'collapsed' }}"
+               data-bs-toggle="collapse" href="#menuAdmin">
+                <i class="bi bi-gear"></i>
+                <span>Administrasi</span>
+                <i class="bi bi-chevron-down ms-auto small"></i>
             </a>
-        </li>
-
-        <li class="sidebar-item {{ request()->routeIs('periode.*') ? 'active' : '' }}">
-            <a href="{{ route('periode.index') }}" class="sidebar-link" data-title="Manajemen Periode">
-                <i class="bi bi-calendar3"></i>
-                <span>Manajemen Periode</span>
-            </a>
-        </li>
-
-        <li class="sidebar-item {{ request()->routeIs('kuesioner.*') ? 'active' : '' }}">
-            <a href="{{ route('kuesioner.index') }}" class="sidebar-link" data-title="Manajemen Kuesioner">
-                <i class="bi bi-ui-checks"></i>
-                <span>Manajemen Kuesioner</span>
-            </a>
-        </li>
-
-        <li class="sidebar-item {{ request()->routeIs('settings.*') ? 'active' : '' }}">
-            <a href="{{ route('settings.index') }}" class="sidebar-link" data-title="Pengaturan Aplikasi">
-                <i class="bi bi-palette"></i>
-                <span>Pengaturan Aplikasi</span>
-            </a>
-        </li>
-
-        <li class="sidebar-item {{ request()->routeIs('activity-log.*') ? 'active' : '' }}">
-            <a href="{{ route('activity-log.index') }}" class="sidebar-link" data-title="Activity Log">
-                <i class="bi bi-clock-history"></i>
-                <span>Activity Log</span>
-            </a>
+            <div class="collapse {{ request()->routeIs(['users.*', 'periode.*', 'kuesioner.*', 'settings.*', 'activity-log.*']) ? 'show' : '' }}" id="menuAdmin">
+                <ul class="list-unstyled ps-4">
+                    <li><a href="{{ route('users.index') }}" class="sub-link {{ request()->routeIs('users.*') ? 'active' : '' }}">User & Role</a></li>
+                    <li><a href="{{ route('periode.index') }}" class="sub-link {{ request()->routeIs('periode.*') ? 'active' : '' }}">Periode</a></li>
+                    <li><a href="{{ route('kuesioner.index') }}" class="sub-link {{ request()->routeIs('kuesioner.*') ? 'active' : '' }}">Manajemen Kuesioner</a></li>
+                    <li><a href="{{ route('settings.index') }}" class="sub-link {{ request()->routeIs('settings.*') ? 'active' : '' }}">Pengaturan</a></li>
+                    <li><a href="{{ route('activity-log.index') }}" class="sub-link {{ request()->routeIs('activity-log.*') ? 'active' : '' }}">Log Aktivitas</a></li>
+                </ul>
+            </div>
         </li>
         @endif
+    </ul>
+
+    <style>
+        .sub-link {
+            display: block;
+            padding: 8px 12px;
+            color: rgba(255,255,255,0.6);
+            text-decoration: none;
+            font-size: 0.85rem;
+            border-left: 2px solid transparent;
+            transition: all 0.3s;
+        }
+        .sub-link:hover, .sub-link.active {
+            color: #fff;
+            background: rgba(255,255,255,0.05);
+            border-left: 2px solid #3b82f6;
+        }
+        .sidebar-link.collapsed i.bi-chevron-down {
+            transform: rotate(-90deg);
+        }
+        .sidebar-link i.bi-chevron-down {
+            transition: transform 0.3s;
+        }
+    </style>
     </ul>
 
     <!-- Sidebar Footer -->
