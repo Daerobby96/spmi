@@ -67,9 +67,15 @@
                     <tr>
                         <th>Standar Mutu</th>
                         <td>
-                            @if($dokumen->standar)
-                                <span class="badge bg-info text-dark">{{ $dokumen->standar->kode }}</span>
-                                {{ $dokumen->standar->nama }}
+                            @if($dokumen->standars->count() > 0)
+                                <div class="d-flex flex-wrap gap-1">
+                                    @foreach($dokumen->standars as $standar)
+                                        <div class="border rounded p-1 px-2 bg-light d-flex align-items-center mb-1">
+                                            <span class="badge bg-info text-dark me-2">{{ $standar->kode }}</span>
+                                            <small>{{ $standar->nama }}</small>
+                                        </div>
+                                    @endforeach
+                                </div>
                             @else
                                 <span class="text-muted">—</span>
                             @endif

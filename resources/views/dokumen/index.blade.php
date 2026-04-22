@@ -173,7 +173,14 @@
                             </span>
                         </td>
                         <td>{{ $dok->unit_pemilik }}</td>
-                        <td>{{ $dok->standar->kode ?? '-' }}</td>
+                        <td>
+                            @foreach($dok->standars as $standar)
+                                <span class="badge bg-info-subtle text-info border border-info-subtle">{{ $standar->kode }}</span>
+                            @endforeach
+                            @if($dok->standars->isEmpty())
+                                -
+                            @endif
+                        </td>
                         <td><span class="badge bg-secondary-subtle text-secondary">v{{ $dok->versi }}</span></td>
                         <td>{{ $dok->tanggal_terbit->format('d M Y') }}</td>
                         <td>

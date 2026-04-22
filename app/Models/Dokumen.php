@@ -11,7 +11,7 @@ class Dokumen extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'kategori_id', 'standar_id', 'pembuat_id', 'kode_dokumen',
+        'kategori_id', 'pembuat_id', 'kode_dokumen',
         'judul', 'unit_pemilik', 'versi', 'tanggal_terbit',
         'tanggal_kadaluarsa', 'file_path', 'file_size', 'file_type',
         'status', 'keterangan', 'download_count',
@@ -30,6 +30,11 @@ class Dokumen extends Model
     public function standar(): BelongsTo
     {
         return $this->belongsTo(Standar::class);
+    }
+
+    public function standars(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(Standar::class, 'dokumen_standar');
     }
 
     public function pembuat(): BelongsTo

@@ -65,15 +65,15 @@
 
                         <div class="col-md-6">
                             <label class="form-label">Standar Mutu Terkait</label>
-                            <select name="standar_id" class="form-select">
-                                <option value="">-- Pilih Standar (opsional) --</option>
+                            <select name="standar_ids[]" id="standar_ids" class="form-select @error('standar_ids') is-invalid @enderror" multiple placeholder="Pilih satu atau lebih standar...">
                                 @foreach($standars as $s)
-                                    <option value="{{ $s->id }}"
-                                        {{ (old('standar_id', $dokumen->standar_id) == $s->id) ? 'selected' : '' }}>
+                                    <option value="{{ $s->id }}" 
+                                        {{ in_array($s->id, old('standar_ids', $dokumen->standars->pluck('id')->toArray())) ? 'selected' : '' }}>
                                         [{{ $s->kode }}] {{ $s->nama }}
                                     </option>
                                 @endforeach
                             </select>
+                            @error('standar_ids') <div class="invalid-feedback">{{ $message }}</div> @enderror
                         </div>
 
                         <div class="col-12">
@@ -189,7 +189,25 @@
 </div>
 @endsection
 
+@push('styles')
+<link href="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.bootstrap5.min.css" rel="stylesheet">
+<style>
+    .ts-wrapper.multi .ts-control > div {
+        background-color: var(--primary-color);
+        color: #fff;
+        border-radius: 4px;
+    }
+</style>
+@endpush
+
 @push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>
+<script>
+    new TomSelect("#standar_ids",{
+        plugins: ['remove_button'],
+        maxItems: null,
+    });
+</script>
 <script>
     const fileInput = document.querySelector('input[name="file"]');
     const uploadForm = document.getElementById('uploadForm');

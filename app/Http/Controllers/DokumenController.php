@@ -15,7 +15,7 @@ class DokumenController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Dokumen::with(['kategori', 'standar', 'pembuat'])->latest();
+        $query = Dokumen::with(['kategori', 'standars', 'pembuat'])->latest();
 
         if ($request->filled('search')) {
             $query->where(function ($q) use ($request) {
@@ -34,7 +34,9 @@ class DokumenController extends Controller
         }
 
         if ($request->filled('standar_id')) {
-            $query->where('standar_id', $request->standar_id);
+            $query->whereHas('standars', function($q) use ($request) {
+                $q->where('standars.id', $request->standar_id);
+            });
         }
 
         $dokumens   = $query->paginate(12)->withQueryString();
@@ -68,7 +70,8 @@ class DokumenController extends Controller
 
         $request->validate([
             'kategori_id'        => 'required|exists:kategori_dokumens,id',
-            'standar_id'         => 'nullable|exists:standars,id',
+            'standar_ids'        => 'nullable|array',
+            'standar_ids.*'      => 'exists:standars,id',
             'judul'              => 'required|string|max:255',
             'unit_pemilik'       => 'required|string|max:255',
             'versi'              => 'required|string|max:20',
@@ -112,9 +115,8 @@ class DokumenController extends Controller
                 $fileType = $file->getClientOriginalExtension();
             }
 
-            Dokumen::create([
+            $dokumen = Dokumen::create([
                 'kategori_id'        => $request->kategori_id,
-                'standar_id'         => $request->standar_id,
                 'pembuat_id'         => Auth::id(),
                 'kode_dokumen'       => $kodeDokumen,
                 'judul'              => $request->judul,
@@ -129,6 +131,10 @@ class DokumenController extends Controller
                 'file_type'          => $fileType,
             ]);
 
+            if ($request->filled('standar_ids')) {
+                $dokumen->standars()->sync($request->standar_ids);
+            }
+
             return redirect()->route('dokumen.index')
                 ->with('success', 'Dokumen "' . $request->judul . '" berhasil ditambahkan.');
         } catch (\Exception $e) {
@@ -141,7 +147,7 @@ class DokumenController extends Controller
         if (!Auth::check() && $dokumen->status !== 'approved') {
             abort(403, 'Anda tidak memiliki hak akses untuk melihat dokumen ini.');
         }
-        $dokumen->load(['kategori', 'standar', 'pembuat']);
+        $dokumen->load(['kategori', 'standars', 'pembuat']);
         return view('dokumen.show', compact('dokumen'));
     }
 
@@ -160,7 +166,8 @@ class DokumenController extends Controller
 
         $request->validate([
             'kategori_id'        => 'required|exists:kategori_dokumens,id',
-            'standar_id'         => 'nullable|exists:standars,id',
+            'standar_ids'        => 'nullable|array',
+            'standar_ids.*'      => 'exists:standars,id',
             'judul'              => 'required|string|max:255',
             'unit_pemilik'       => 'required|string|max:255',
             'versi'              => 'required|string|max:20',
@@ -189,7 +196,7 @@ class DokumenController extends Controller
 
         try {
             $data = $request->only([
-                'kategori_id', 'standar_id', 'judul', 'unit_pemilik',
+                'kategori_id', 'judul', 'unit_pemilik',
                 'versi', 'tanggal_terbit', 'tanggal_kadaluarsa',
                 'status', 'keterangan',
             ]);
@@ -205,6 +212,10 @@ class DokumenController extends Controller
             }
 
             $dokumen->update($data);
+            
+            if ($request->has('standar_ids')) {
+                $dokumen->standars()->sync($request->standar_ids);
+            }
 
             return redirect()->route('dokumen.index')
                 ->with('success', 'Dokumen "' . $dokumen->judul . '" berhasil diperbarui.');

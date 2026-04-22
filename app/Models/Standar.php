@@ -18,6 +18,11 @@ class Standar extends Model
         return $this->hasMany(Dokumen::class);
     }
 
+    public function dokumens_many(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(Dokumen::class, 'dokumen_standar');
+    }
+
     public function indikators(): HasMany
     {
         return $this->hasMany(IndikatorKinerja::class);
