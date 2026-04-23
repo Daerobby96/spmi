@@ -31,15 +31,38 @@ class PpeppService
         if ($stats['total'] == 0) return ['status' => 'error', 'message' => 'Data Tracer Study kosong.'];
 
         $employedRate = ($stats['bekerja'] / $stats['total']) * 100;
+        
+        // Hitung Keselarasan / Kesesuaian (Status 1, 2, 3 = Erat/Sesuai)
+        $bekerjaValid = TracerStudy::whereNotNull('keselarasan_horisontal')->count();
+        $selaras = TracerStudy::whereIn('keselarasan_horisontal', ['1', '2', '3', 'Sangat Erat', 'Erat', 'Cukup Erat'])->count();
+        $kesesuaianRate = $bekerjaValid > 0 ? ($selaras / $bekerjaValid) * 100 : 0;
 
         $syncedCount = 0;
         
-        // Cari Indikator terkait Pekerjaan / Keterserapan
-        $indikatorKerjaList = IndikatorKinerja::where(function($q) {
-            $q->where('nama', 'ilike', '%kerja%')
-              ->orWhere('nama', 'ilike', '%pekerjaan%')
-              ->orWhere('nama', 'ilike', '%terserap%');
-        })->where('nama', 'ilike', '%lulusan%')->get();
+        // Cari Indikator terkait Kesesuaian / Keselarasan
+        $indikatorKesesuaianList = IndikatorKinerja::where('nama', 'ilike', '%lulusan%')
+            ->where(function($q) {
+                $q->where('nama', 'ilike', '%sesuai%')
+                  ->orWhere('nama', 'ilike', '%selaras%')
+                  ->orWhere('nama', 'ilike', '%relevan%');
+            })->get();
+            
+        $excludeIds = [];
+        foreach ($indikatorKesesuaianList as $indikatorKesesuaian) {
+            $this->saveMonitoring($periode->id, $indikatorKesesuaian->id, $kesesuaianRate);
+            $excludeIds[] = $indikatorKesesuaian->id;
+            $syncedCount++;
+        }
+        
+        // Cari Indikator terkait Pekerjaan / Keterserapan (Kecuali yang Kesesuaian)
+        $indikatorKerjaList = IndikatorKinerja::where('nama', 'ilike', '%lulusan%')
+            ->where(function($q) {
+                $q->where('nama', 'ilike', '%kerja%')
+                  ->orWhere('nama', 'ilike', '%pekerjaan%')
+                  ->orWhere('nama', 'ilike', '%terserap%');
+            })
+            ->whereNotIn('id', $excludeIds)
+            ->get();
         
         foreach ($indikatorKerjaList as $indikatorKerja) {
             $this->saveMonitoring($periode->id, $indikatorKerja->id, $employedRate);
@@ -100,14 +123,17 @@ class PpeppService
 
         $results = [];
 
-        // Ambil semua indikator yang mengandung kata lulusan
+        // Ambil semua indikator yang relevan
         $indikators = IndikatorKinerja::where('nama', 'ilike', '%lulusan%')
             ->where(function($q) {
                 $q->where('nama', 'ilike', '%kerja%')
                   ->orWhere('nama', 'ilike', '%pekerjaan%')
                   ->orWhere('nama', 'ilike', '%waktu tunggu%')
                   ->orWhere('nama', 'ilike', '%pendapatan%')
-                  ->orWhere('nama', 'ilike', '%gaji%');
+                  ->orWhere('nama', 'ilike', '%gaji%')
+                  ->orWhere('nama', 'ilike', '%sesuai%')
+                  ->orWhere('nama', 'ilike', '%selaras%')
+                  ->orWhere('nama', 'ilike', '%relevan%');
             })->get();
 
         foreach ($indikators as $indikator) {
