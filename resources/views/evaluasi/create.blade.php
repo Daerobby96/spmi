@@ -33,7 +33,7 @@
                                         data-unit="{{ $m->indikator->unit_pengukuran ?? '' }}"
                                         {{ $selected && $selected->id == $m->id ? 'selected' : '' }}>
                                         {{ $m->indikator->kode }} - {{ $m->indikator->nama }} 
-                                        ({{ $m->tanggal_input->format('d M Y') }})
+                                        ({{ $m->tanggal_input->translatedFormat('d F Y') }})
                                     </option>
                                 @endforeach
                             </select>
@@ -123,7 +123,7 @@
                     </tr>
                     <tr>
                         <th>Tanggal Input</th>
-                        <td>{{ $selected->tanggal_input->format('d M Y') }}</td>
+                        <td>{{ $selected->tanggal_input->translatedFormat('d F Y') }}</td>
                     </tr>
                 </table>
                 @else

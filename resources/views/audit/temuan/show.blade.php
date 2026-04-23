@@ -49,7 +49,7 @@
                     </tr>
                     <tr>
                         <th>Batas TL</th>
-                        <td>{{ $temuan->batas_tindak_lanjut?->format('d M Y') ?? '-' }}</td>
+                        <td>{{ $temuan->batas_tindak_lanjut?->translatedFormat('d F Y') ?? '-' }}</td>
                     </tr>
                     <tr>
                         <th>Auditor</th>
@@ -109,7 +109,7 @@
                             @foreach($temuan->tindakLanjuts as $tl)
                             <tr>
                                 <td class="text-muted">{{ $loop->iteration }}</td>
-                                <td>{{ $tl->created_at->format('d M Y') }}</td>
+                                <td>{{ $tl->created_at->translatedFormat('d F Y') }}</td>
                                 <td>{{ Str::limit($tl->rencana_tindakan, 60) }}</td>
                                 <td>{{ $tl->penanggungJawab->name ?? '-' }}</td>
                                 <td class="text-center">

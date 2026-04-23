@@ -137,7 +137,7 @@
                     @endphp
                     <tr>
                         <td class="text-muted">{{ $loop->iteration }}</td>
-                        <td>{{ $m ? $m->tanggal_input->format('d M Y') : '-' }}</td>
+                        <td>{{ $m ? $m->tanggal_input->translatedFormat('d F Y') : '-' }}</td>
                         <td>
                             <div class="fw-semibold">{{ $i->nama }}</div>
                             <div class="text-muted small">{{ $i->kode }}</div>

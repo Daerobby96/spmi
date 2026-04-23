@@ -123,7 +123,7 @@
                             @if($temuan->batas_tindak_lanjut)
                                 @php $isOverdue = $temuan->batas_tindak_lanjut->isPast(); @endphp
                                 <span class="{{ $isOverdue ? 'text-danger fw-semibold' : '' }}">
-                                    {{ $temuan->batas_tindak_lanjut->format('d M Y') }}
+                                    {{ $temuan->batas_tindak_lanjut->translatedFormat('d F Y') }}
                                     @if($isOverdue)
                                         <i class="bi bi-exclamation-triangle"></i>
                                     @endif

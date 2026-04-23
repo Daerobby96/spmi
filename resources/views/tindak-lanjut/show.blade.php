@@ -72,11 +72,11 @@
                     </tr>
                     <tr>
                         <th>Target Selesai</th>
-                        <td>{{ $tindakLanjut->target_selesai->format('d M Y') }}</td>
+                        <td>{{ $tindakLanjut->target_selesai->translatedFormat('d F Y') }}</td>
                     </tr>
                     <tr>
                         <th>Tanggal Realisasi</th>
-                        <td>{{ $tindakLanjut->tanggal_realisasi?->format('d M Y') ?? '-' }}</td>
+                        <td>{{ $tindakLanjut->tanggal_realisasi?->translatedFormat('d F Y') ?? '-' }}</td>
                     </tr>
                     <tr>
                         <th>Status</th>
@@ -141,7 +141,7 @@
                     </tr>
                     <tr>
                         <th>Tanggal Verifikasi</th>
-                        <td>{{ $tindakLanjut->tanggal_verifikasi?->format('d M Y') ?? '-' }}</td>
+                        <td>{{ $tindakLanjut->tanggal_verifikasi?->translatedFormat('d F Y') ?? '-' }}</td>
                     </tr>
                     @if($tindakLanjut->verifikasi_auditor)
                     <tr>

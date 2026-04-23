@@ -8,8 +8,7 @@ class PeriodeController extends Controller
 {
     public function index()
     {
-        $periodes = Periode::orderBy('tahun', 'desc')
-            ->orderBy('semester', 'desc')
+        $periodes = Periode::orderBy('tanggal_mulai', 'desc')
             ->paginate(10);
         return view('periode.index', compact('periodes'));
     }

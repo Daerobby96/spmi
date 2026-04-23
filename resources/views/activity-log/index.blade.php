@@ -73,7 +73,7 @@
                     @forelse($logs as $log)
                         <tr>
                             <td class="ps-4">
-                                <span class="d-block small fw-bold">{{ $log->created_at->format('d M Y') }}</span>
+                                <span class="d-block small fw-bold">{{ $log->created_at->translatedFormat('d F Y') }}</span>
                                 <span class="text-muted small">{{ $log->created_at->format('H:i:s') }}</span>
                             </td>
                             <td>

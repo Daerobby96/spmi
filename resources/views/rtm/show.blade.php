@@ -26,7 +26,7 @@
                 <table class="table table-borderless mb-0 detail-table">
                     <tr>
                         <th width="120">Tanggal</th>
-                        <td>{{ $rTM->tanggal_rapat->format('d M Y') }}</td>
+                        <td>{{ $rTM->tanggal_rapat->translatedFormat('d F Y') }}</td>
                     </tr>
                     <tr>
                         <th>Absensi</th>

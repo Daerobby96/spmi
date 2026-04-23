@@ -181,7 +181,7 @@
                                         <span class="badge bg-secondary">{{ ucfirst($dokumen->status) }}</span>
                                     @endif
                                 </td>
-                                <td>{{ $dokumen->tanggal_berlaku?->format('d M Y') ?? '-' }}</td>
+                                <td>{{ $dokumen->tanggal_berlaku?->translatedFormat('d F Y') ?? '-' }}</td>
                             </tr>
                             @empty
                             <tr>

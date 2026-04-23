@@ -210,7 +210,7 @@
         @if($periode)
             <div class="meta">Periode: {{ $periode->nama }} ({{ $periode->tahun }} &mdash; {{ ucfirst($periode->semester) }})</div>
         @endif
-        <div class="meta">Dicetak: {{ now()->format('d F Y H:i') }}</div>
+        <div class="meta">Dicetak: {{ now()->translatedFormat('d F Y H:i') }}</div>
     </div>
 
     {{-- ===== RINGKASAN AUDIT ===== --}}
@@ -442,7 +442,7 @@
     {{-- ===== FOOTER ===== --}}
     <div class="footer">
         <p>Dokumen digenerate oleh Sistem Penjaminan Mutu Internal (SPMI)</p>
-        <p>{{ now()->format('d F Y') }} &nbsp;|&nbsp; {{ now()->format('H:i:s') }}</p>
+        <p>{{ now()->translatedFormat('d F Y') }} &nbsp;|&nbsp; {{ now()->format('H:i:s') }}</p>
     </div>
 
 </div>

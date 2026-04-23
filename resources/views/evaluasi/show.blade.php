@@ -25,7 +25,7 @@
                     </tr>
                     <tr>
                         <th>Tanggal Input</th>
-                        <td>{{ $evaluasi->monitoring->tanggal_input->format('d M Y') }}</td>
+                        <td>{{ $evaluasi->monitoring->tanggal_input->translatedFormat('d F Y') }}</td>
                     </tr>
                     <tr>
                         <th>Indikator</th>
@@ -93,7 +93,7 @@
                         <table class="table table-borderless detail-table mb-0">
                             <tr>
                                 <th>Tanggal Evaluasi</th>
-                                <td>{{ $evaluasi->tanggal_evaluasi->format('d M Y') }}</td>
+                                <td>{{ $evaluasi->tanggal_evaluasi->translatedFormat('d F Y') }}</td>
                             </tr>
                             <tr>
                                 <th>Evaluator</th>

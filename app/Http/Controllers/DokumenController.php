@@ -15,7 +15,7 @@ class DokumenController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Dokumen::with(['kategori', 'standars', 'pembuat'])->latest();
+        $query = Dokumen::with(['kategori', 'standars', 'pembuat'])->latest()->orderBy('id', 'desc');
 
         if ($request->filled('search')) {
             $query->where(function ($q) use ($request) {

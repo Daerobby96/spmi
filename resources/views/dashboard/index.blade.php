@@ -280,7 +280,7 @@
                         <td>{{ $audit->nama_audit }}</td>
                         <td>{{ $audit->unit_yang_diaudit }}</td>
                         <td>{{ $audit->ketuaAuditor->name }}</td>
-                        <td>{{ $audit->tanggal_audit->format('d M Y') }}</td>
+                        <td>{{ $audit->tanggal_audit->translatedFormat('d F Y') }}</td>
                         <td>{!! $audit->status_badge !!}</td>
                         <td>
                             <a href="{{ route('audit.show', $audit) }}" class="btn btn-sm btn-outline-secondary">

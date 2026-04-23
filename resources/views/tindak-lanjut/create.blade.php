@@ -38,7 +38,7 @@
                     </tr>
                     <tr>
                         <th>Batas TL</th>
-                        <td>{{ $temuan->batas_tindak_lanjut?->format('d M Y') ?? '-' }}</td>
+                        <td>{{ $temuan->batas_tindak_lanjut?->translatedFormat('d F Y') ?? '-' }}</td>
                     </tr>
                 </table>
                 <hr>

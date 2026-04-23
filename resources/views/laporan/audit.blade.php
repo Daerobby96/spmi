@@ -121,7 +121,7 @@
                                 <td><code class="text-primary">{{ $audit->kode_audit }}</code></td>
                                 <td>{{ $audit->nama_audit }}</td>
                                 <td>{{ $audit->unit_yang_diaudit }}</td>
-                                <td>{{ $audit->tanggal_audit?->format('d M Y') ?? '-' }}</td>
+                                <td>{{ $audit->tanggal_audit?->translatedFormat('d F Y') ?? '-' }}</td>
                                 <td class="text-center">
                                     @php
                                         $major = $audit->temuans->where('kategori', 'KTS_Mayor')->count();
@@ -209,9 +209,9 @@
                                 <td>
                                     @if($temuan->batas_tindak_lanjut)
                                         @if($temuan->batas_tindak_lanjut->isPast() && $temuan->status !== 'closed')
-                                            <span class="text-danger">{{ $temuan->batas_tindak_lanjut->format('d M Y') }}</span>
+                                            <span class="text-danger">{{ $temuan->batas_tindak_lanjut->translatedFormat('d F Y') }}</span>
                                         @else
-                                            {{ $temuan->batas_tindak_lanjut->format('d M Y') }}
+                                            {{ $temuan->batas_tindak_lanjut->translatedFormat('d F Y') }}
                                         @endif
                                     @else
                                         <span class="text-muted">-</span>

@@ -97,7 +97,7 @@
                             <div class="fw-bold text-primary">{{ $rtm->judul_rapat }}</div>
                             <small class="text-muted">{{ Str::limit($rtm->agenda, 50) }}</small>
                         </td>
-                        <td>{{ $rtm->tanggal_rapat->format('d M Y') }}</td>
+                        <td>{{ $rtm->tanggal_rapat->translatedFormat('d F Y') }}</td>
                         <td>
                             @if($rtm->status === 'draft')
                                 <span class="badge bg-warning text-dark">Draft</span>

@@ -256,7 +256,7 @@
                             @endforeach
                         </div>
                         <div class="mt-auto pt-4 text-center">
-                            <span class="text-muted small">Updated: <span class="fw-bold">{{ now()->format('d M Y') }}</span></span>
+                            <span class="text-muted small">Updated: <span class="fw-bold">{{ now()->translatedFormat('d F Y') }}</span></span>
                         </div>
                     </div>
                 </div>

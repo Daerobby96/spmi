@@ -42,8 +42,8 @@
                                 {{ ucfirst($periode->semester) }}
                             </span>
                         </td>
-                        <td>{{ $periode->tanggal_mulai->format('d M Y') }}</td>
-                        <td>{{ $periode->tanggal_selesai->format('d M Y') }}</td>
+                        <td>{{ $periode->tanggal_mulai->translatedFormat('d F Y') }}</td>
+                        <td>{{ $periode->tanggal_selesai->translatedFormat('d F Y') }}</td>
                         <td class="text-center">
                             @if($periode->is_aktif)
                                 <span class="badge bg-success">Aktif</span>

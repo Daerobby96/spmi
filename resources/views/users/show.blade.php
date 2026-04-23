@@ -101,7 +101,7 @@
                             </tr>
                             <tr>
                                 <th>Terdaftar</th>
-                                <td>{{ $user->created_at->format('d M Y H:i') }}</td>
+                                <td>{{ $user->created_at->translatedFormat('d F Y H:i') }}</td>
                             </tr>
                         </table>
                     </div>

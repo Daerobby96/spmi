@@ -25,7 +25,7 @@
                     </tr>
                     <tr>
                         <th>Tanggal Input</th>
-                        <td>{{ $monitoring->tanggal_input->format('d M Y') }}</td>
+                        <td>{{ $monitoring->tanggal_input->translatedFormat('d F Y') }}</td>
                     </tr>
                     <tr>
                         <th>Indikator</th>
@@ -154,7 +154,7 @@
                     </tr>
                     <tr>
                         <th>Tanggal Evaluasi</th>
-                        <td>{{ $monitoring->evaluasi->created_at->format('d M Y H:i') }}</td>
+                        <td>{{ $monitoring->evaluasi->created_at->translatedFormat('d F Y H:i') }}</td>
                     </tr>
                     @if($monitoring->evaluasi->catatan)
                     <tr>

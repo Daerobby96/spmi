@@ -128,7 +128,7 @@
                         <td class="fw-semibold">{{ $audit->nama_audit }}</td>
                         <td>{{ $audit->unit_yang_diaudit }}</td>
                         <td>{{ $audit->ketuaAuditor->name ?? '-' }}</td>
-                        <td>{{ $audit->tanggal_audit->format('d M Y') }}</td>
+                        <td>{{ $audit->tanggal_audit->translatedFormat('d F Y') }}</td>
                         <td class="text-center">
                             <span class="badge bg-light text-dark border">
                                 {{ $audit->temuans()->count() }} temuan

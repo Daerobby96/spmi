@@ -100,7 +100,7 @@
                     </tr>
                     <tr>
                         <th>Login Terakhir</th>
-                        <td>{{ $user->updated_at->format('d M Y H:i') }}</td>
+                        <td>{{ $user->updated_at->translatedFormat('d F Y H:i') }}</td>
                     </tr>
                 </table>
             </div>

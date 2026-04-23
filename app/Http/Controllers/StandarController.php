@@ -17,7 +17,7 @@ class StandarController extends Controller
                   ->orWhere('kode', 'like', '%' . $request->search . '%');
         }
 
-        $standars = $query->latest()->paginate(10)->withQueryString();
+        $standars = $query->latest()->orderBy('id', 'desc')->paginate(10)->withQueryString();
 
         return view('standar.index', compact('standars'));
     }

@@ -183,7 +183,7 @@
                             @endif
                         </td>
                         <td><span class="badge bg-secondary-subtle text-secondary">v{{ $dok->versi }}</span></td>
-                        <td>{{ $dok->tanggal_terbit->format('d M Y') }}</td>
+                        <td>{{ $dok->tanggal_terbit->translatedFormat('d F Y') }}</td>
                         <td>
                             @php
                                 $statusConfig = [

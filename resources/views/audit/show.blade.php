@@ -67,7 +67,7 @@
                                     <tr><th>Nama</th><td class="fw-semibold">{{ $audit->nama_audit }}</td></tr>
                                     <tr><th>Unit Diaudit</th><td><span class="badge bg-indigo-subtle text-indigo">{{ $audit->unit_yang_diaudit }}</span></td></tr>
                                     <tr><th>Ketua Auditor</th><td>{{ $audit->ketuaAuditor->name ?? '-' }}</td></tr>
-                                    <tr><th>Tgl Audit</th><td>{{ $audit->tanggal_audit->format('d M Y') }}</td></tr>
+                                    <tr><th>Tgl Audit</th><td>{{ $audit->tanggal_audit->translatedFormat('d F Y') }}</td></tr>
                                     <tr><th>Opening</th><td><small class="text-muted">{{ $audit->opening_meeting ? $audit->opening_meeting->format('d/m/y H:i') : 'Belum Atur' }}</small></td></tr>
                                     <tr><th>Closing</th><td><small class="text-muted">{{ $audit->closing_meeting ? $audit->closing_meeting->format('d/m/y H:i') : 'Belum Atur' }}</small></td></tr>
                                     <tr><th>Status</th><td>{!! $audit->status_badge !!}</td></tr>
