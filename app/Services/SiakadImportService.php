@@ -135,6 +135,7 @@ class SiakadImportService
                         }
                     }
                 }
+            }
             // ==========================================
             // AUTO-SCORING: Integrasi ke Indikator Kinerja
             // ==========================================
