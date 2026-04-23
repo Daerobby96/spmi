@@ -59,7 +59,7 @@ Route::middleware(['auth'])->group(function () {
     });
 
     // ── Audit Mutu Internal ────────────────────────────────────────
-    Route::middleware('role:super_admin,auditor')->group(function () {
+    Route::middleware('role:super_admin,auditor,pimpinan')->group(function () {
         Route::post('audit/checklist-inline', [AuditController::class, 'updateChecklistInline'])->name('audit.checklist-inline');
         Route::resource('audit', AuditController::class);
         Route::post('audit/{audit}/generate-checklist', [AuditController::class, 'generateChecklist'])
@@ -74,7 +74,7 @@ Route::middleware(['auth'])->group(function () {
     });
 
     // Tindak lanjut (auditee juga bisa input)
-    Route::middleware('role:super_admin,auditor,auditee')->group(function () {
+    Route::middleware('role:super_admin,auditor,auditee,pimpinan')->group(function () {
         Route::resource('tindak-lanjut', TindakLanjutController::class);
     });
 
@@ -90,25 +90,25 @@ Route::middleware(['auth'])->group(function () {
     });
 
     // ── Monitoring & Evaluasi ──────────────────────────────────────
-    Route::middleware('role:super_admin,auditor,auditee')->group(function () {
+    Route::middleware('role:super_admin,auditor,auditee,pimpinan')->group(function () {
         Route::post('monitoring/sync-siakad', [MonitoringController::class, 'syncSiakad'])->name('monitoring.sync-siakad');
         Route::get('monitoring/template', [MonitoringController::class, 'downloadTemplate'])->name('monitoring.template');
         Route::post('monitoring/import', [MonitoringController::class, 'import'])->name('monitoring.import');
         Route::post('monitoring/inline', [MonitoringController::class, 'updateInline'])->name('monitoring.update-inline');
         Route::resource('monitoring', MonitoringController::class);
     });
-    Route::middleware('role:super_admin,auditor')->group(function () {
+    Route::middleware('role:super_admin,auditor,pimpinan')->group(function () {
         Route::post('evaluasi/inline', [EvaluasiController::class, 'updateInline'])->name('evaluasi.update-inline');
         Route::resource('evaluasi', EvaluasiController::class);
     });
-    Route::middleware('role:super_admin')->group(function () {
+    Route::middleware('role:super_admin,pimpinan')->group(function () {
         Route::get('indikator-kinerja/template', [IndikatorKinerjaController::class, 'downloadTemplate'])->name('indikator-kinerja.template');
         Route::post('indikator-kinerja/import', [IndikatorKinerjaController::class, 'import'])->name('indikator-kinerja.import');
         Route::resource('indikator-kinerja', IndikatorKinerjaController::class);
     });
 
     // ── Kuesioner (Management) ──────────────────────────────────
-    Route::middleware('role:super_admin,auditor')->group(function () {
+    Route::middleware('role:super_admin,auditor,pimpinan')->group(function () {
         Route::get('kuesioner/template', [KuesionerController::class, 'downloadTemplate'])->name('kuesioner.template');
         Route::post('kuesioner/import-siakad', [KuesionerController::class, 'importSiakad'])->name('kuesioner.import-siakad');
         Route::post('kuesioner/{kuesioner}/import', [KuesionerController::class, 'import'])->name('kuesioner.import');

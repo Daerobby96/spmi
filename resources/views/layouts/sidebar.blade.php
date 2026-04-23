@@ -93,7 +93,7 @@
         {{-- Monitoring & Evaluasi --}}
         <li class="sidebar-heading">Monitoring & Evaluasi</li>
 
-        @if(auth()->user()->isSuperAdmin())
+        @if(auth()->user()->isSuperAdmin() || auth()->user()->isPimpinan())
         <li class="sidebar-item {{ request()->routeIs('indikator-kinerja.*') ? 'active' : '' }}">
             <a href="{{ route('indikator-kinerja.index') }}" class="sidebar-link" data-title="Indikator Kinerja">
                 <i class="bi bi-bullseye"></i>
@@ -109,7 +109,7 @@
             </a>
         </li>
 
-        @if(auth()->user()->canManageAudit())
+        @if(auth()->user()->canManageAudit() || auth()->user()->isPimpinan())
         <li class="sidebar-item {{ request()->routeIs('evaluasi.*') ? 'active' : '' }}">
             <a href="{{ route('evaluasi.index') }}" class="sidebar-link" data-title="Evaluasi">
                 <i class="bi bi-graph-up-arrow"></i>
@@ -120,10 +120,10 @@
 
 
         {{-- Audit Mutu Internal --}}
-        @if(auth()->user()->canManageAudit() || auth()->user()->isAuditee())
+        @if(auth()->user()->canManageAudit() || auth()->user()->isAuditee() || auth()->user()->isPimpinan())
         <li class="sidebar-heading">Audit Mutu Internal</li>
 
-        @if(auth()->user()->canManageAudit())
+        @if(auth()->user()->canManageAudit() || auth()->user()->isPimpinan())
         <li class="sidebar-item {{ request()->routeIs('audit.*') ? 'active' : '' }}">
             <a href="{{ route('audit.index') }}" class="sidebar-link" data-title="Pelaksanaan Audit">
                 <i class="bi bi-clipboard2-check"></i>
