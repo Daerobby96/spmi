@@ -11,36 +11,6 @@ use Illuminate\Support\Facades\Auth;
 class PpeppService
 {
     /**
-     * Pastikan IKU Tracer Study tersedia di database
-     */
-    private function ensureTracerIndicatorsExist()
-    {
-        $standar = \App\Models\Standar::first();
-        $standarId = $standar ? $standar->id : null;
-
-        $defaults = [
-            'TRC-01' => ['nama' => 'Persentase Lulusan Mendapat Pekerjaan', 'satuan' => '%', 'target' => 80, 'deskripsi' => '≥ 80% Lulusan Bekerja'],
-            'TRC-02' => ['nama' => 'Rerata Waktu Tunggu Lulusan', 'satuan' => 'Bulan', 'target' => 6, 'deskripsi' => '< 6 Bulan'],
-            'TRC-03' => ['nama' => 'Rerata Pendapatan Lulusan', 'satuan' => 'Rp', 'target' => 5000000, 'deskripsi' => '≥ 1.2x UMP'],
-        ];
-
-        foreach ($defaults as $kode => $data) {
-            IndikatorKinerja::firstOrCreate(
-                ['kode' => $kode],
-                [
-                    'nama' => $data['nama'],
-                    'unit_pengukuran' => $data['satuan'],
-                    'target_nilai' => $data['target'],
-                    'target_deskripsi' => $data['deskripsi'],
-                    'unit_kerja' => 'Pusat Karir / Alumni',
-                    'standar_id' => $standarId,
-                    'is_aktif' => true,
-                ]
-            );
-        }
-    }
-
-    /**
      * Sinkronisasi data Tracer Study ke Monitoring (Evaluasi PPEPP)
      */
     public function syncTracerToMonitoring()
@@ -65,34 +35,34 @@ class PpeppService
         $syncedCount = 0;
         
         // Cari Indikator terkait Pekerjaan / Keterserapan
-        $indikatorKerja = IndikatorKinerja::where(function($q) {
+        $indikatorKerjaList = IndikatorKinerja::where(function($q) {
             $q->where('nama', 'ilike', '%kerja%')
               ->orWhere('nama', 'ilike', '%pekerjaan%')
               ->orWhere('nama', 'ilike', '%terserap%');
-        })->where('nama', 'ilike', '%lulusan%')->first();
+        })->where('nama', 'ilike', '%lulusan%')->get();
         
-        if ($indikatorKerja) {
+        foreach ($indikatorKerjaList as $indikatorKerja) {
             $this->saveMonitoring($periode->id, $indikatorKerja->id, $employedRate);
             $syncedCount++;
         }
 
         // Cari Indikator terkait Waktu Tunggu
-        $indikatorTunggu = IndikatorKinerja::where('nama', 'ilike', '%waktu tunggu%')
-            ->where('nama', 'ilike', '%lulusan%')->first();
+        $indikatorTungguList = IndikatorKinerja::where('nama', 'ilike', '%waktu tunggu%')
+            ->where('nama', 'ilike', '%lulusan%')->get();
             
-        if ($indikatorTunggu) {
+        foreach ($indikatorTungguList as $indikatorTunggu) {
             $this->saveMonitoring($periode->id, $indikatorTunggu->id, $stats['avg_tunggu']);
             $syncedCount++;
         }
 
         // Cari Indikator terkait Pendapatan / Gaji
-        $indikatorGaji = IndikatorKinerja::where(function($q) {
+        $indikatorGajiList = IndikatorKinerja::where(function($q) {
             $q->where('nama', 'ilike', '%pendapatan%')
               ->orWhere('nama', 'ilike', '%gaji%')
               ->orWhere('nama', 'ilike', '%ump%');
-        })->where('nama', 'ilike', '%lulusan%')->first();
+        })->where('nama', 'ilike', '%lulusan%')->get();
         
-        if ($indikatorGaji) {
+        foreach ($indikatorGajiList as $indikatorGaji) {
             $this->saveMonitoring($periode->id, $indikatorGaji->id, $stats['avg_gaji']);
             $syncedCount++;
         }
