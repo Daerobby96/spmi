@@ -5,10 +5,11 @@
     <title>Buku Laporan AMI</title>
     <style>
         body {
-            font-family: 'DejaVu Sans', sans-serif;
-            font-size: 11pt;
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 12pt;
             line-height: 1.5;
-            color: #333;
+            color: #000;
+            text-align: justify;
         }
         .page-break { page-break-after: always; }
         .text-center { text-align: center; }
@@ -44,7 +45,7 @@
             padding-top: 100px;
         }
         .cover-title {
-            font-size: 24pt;
+            font-size: 20pt;
             font-weight: bold;
             text-transform: uppercase;
             margin-bottom: 20px;
@@ -60,12 +61,12 @@
         }
         .cover-bottom {
             margin-top: 150px;
-            font-size: 14pt;
+            font-size: 16pt;
             font-weight: bold;
         }
 
-        h1 { font-size: 18pt; margin-top: 20px; border-bottom: 2px solid #000; padding-bottom: 5px; }
-        h2 { font-size: 14pt; margin-top: 15px; }
+        h1 { font-size: 16pt; margin-top: 20px; text-align: center; font-weight: bold; text-transform: uppercase; }
+        h2 { font-size: 12pt; margin-top: 15px; font-weight: bold; }
         
         .pengesahan-table { border: none; margin-top: 50px; }
         .pengesahan-table td { border: none; text-align: center; width: 50%; padding-top: 10px; }
@@ -79,7 +80,7 @@
         <div class="cover-title">
             BUKU LAPORAN<br>
             AUDIT MUTU INTERNAL (AMI)<br>
-            SIKLUS PPEPP
+            PELAKSANAAN SIKLUS PPEPP
         </div>
         
         <div class="cover-subtitle">
@@ -110,29 +111,25 @@
 
     {{-- LEMBAR PENGESAHAN --}}
     <div class="page-break">
-        <h1 class="text-center" style="border:none;">LEMBAR PENGESAHAN</h1>
-        <p class="mt-4">
+        <h1>LEMBAR PENGESAHAN</h1>
+        <p class="mt-4 text-center">
             Buku Laporan Audit Mutu Internal (AMI) Periode {{ $periode ? $periode->nama : '-' }} ini disusun sebagai bentuk pertanggungjawaban pelaksanaan siklus Penjaminan Mutu Internal (PPEPP) di lingkungan {{ $setting['nama_institusi'] }}.
         </p>
-        <p>Laporan ini merangkum seluruh kegiatan mulai dari Penetapan Standar, Pelaksanaan, Evaluasi (Audit), Pengendalian (Tindak Lanjut), hingga Peningkatan (Rapat Tinjauan Manajemen).</p>
+        <p class="text-center">Laporan ini merangkum seluruh kegiatan mulai dari Penetapan Standar, Pelaksanaan, Evaluasi (Audit), Pengendalian (Tindak Lanjut), hingga Peningkatan (Rapat Tinjauan Manajemen).</p>
         
         <table class="pengesahan-table mt-8">
             <tr>
                 <td>
                     Mengetahui,<br>
                     <strong>Ketua Penjaminan Mutu</strong>
-                    <div class="signature-space">
-                        {{-- QR Code placeholder or signature --}}
-                    </div>
+                    <div class="signature-space"></div>
                     <u>{{ $ketua_spmi ? $ketua_spmi->name : '.......................................' }}</u>
                     @if($ketua_spmi && $ketua_spmi->nidn)<br>NIDN. {{ $ketua_spmi->nidn }}@endif
                 </td>
                 <td>
                     Mengesahkan,<br>
                     <strong>Pimpinan Institusi</strong>
-                    <div class="signature-space">
-                        {{-- QR Code placeholder or signature --}}
-                    </div>
+                    <div class="signature-space"></div>
                     <u>{{ $kepala_institusi ? $kepala_institusi->name : '.......................................' }}</u>
                     @if($kepala_institusi && $kepala_institusi->nidn)<br>NIDN. {{ $kepala_institusi->nidn }}@endif
                 </td>
@@ -140,12 +137,44 @@
         </table>
     </div>
 
-    {{-- BAB 1: PENETAPAN --}}
+    {{-- KATA PENGANTAR --}}
     <div class="page-break">
-        <h1>BAB I. PENETAPAN (STANDAR MUTU)</h1>
-        <p>Tahap penetapan merupakan tahap awal siklus PPEPP dimana standar mutu pendidikan tinggi ditetapkan. Berikut adalah ringkasan standar yang berlaku pada periode ini:</p>
+        <h1>KATA PENGANTAR</h1>
+        <p>Puji syukur kehadirat Tuhan Yang Maha Esa atas rahmat dan karunia-Nya, sehingga Buku Laporan Pelaksanaan Audit Mutu Internal (AMI) siklus Penjaminan Mutu Internal (PPEPP) Periode {{ $periode ? $periode->nama : '-' }} di lingkungan {{ $setting['nama_institusi'] }} ini dapat diselesaikan dengan baik.</p>
+        <p>Laporan ini merupakan manifestasi dari komitmen {{ $setting['nama_institusi'] }} dalam membangun budaya mutu berkelanjutan secara sistematis dan terstruktur. Penyusunan laporan ini mengikuti kaidah dan standar yang ditetapkan oleh instrumen akreditasi nasional, di mana implementasi SPMI diukur melalui efektivitas pelaksanaan siklus PPEPP.</p>
+        <p>Kami mengucapkan terima kasih kepada pimpinan institusi, tim auditor internal, pimpinan unit kerja (auditee), serta seluruh pihak yang telah berpartisipasi aktif dalam menyukseskan implementasi SPMI tahun ini.</p>
+        <p>Semoga laporan ini dapat menjadi acuan strategis dalam mengambil kebijakan peningkatan mutu pendidikan di masa yang akan datang.</p>
+        <div class="mt-8 text-right">
+            <p>{{ $setting['kota_institusi'] ?? 'Kota' }}, {{ date('d F Y') }}<br>
+            Ketua Penjaminan Mutu</p>
+            <div class="signature-space"></div>
+            <p><u>{{ $ketua_spmi ? $ketua_spmi->name : '.......................................' }}</u></p>
+        </div>
+    </div>
+
+    {{-- BAB I: PENDAHULUAN --}}
+    <div class="page-break">
+        <h1>BAB I<br>PENDAHULUAN</h1>
+        <h2>1.1 Latar Belakang</h2>
+        <p>Sistem Penjaminan Mutu Internal (SPMI) merupakan kegiatan sistemik penjaminan mutu pendidikan tinggi oleh perguruan tinggi secara otonom untuk mengendalikan dan meningkatkan penyelenggaraan pendidikan tinggi secara berencana dan berkelanjutan. Pelaksanaan SPMI di {{ $setting['nama_institusi'] }} diwujudkan melalui siklus Penetapan, Pelaksanaan, Evaluasi, Pengendalian, dan Peningkatan (PPEPP).</p>
+        <h2>1.2 Tujuan</h2>
+        <p>Tujuan penyusunan laporan ini adalah:</p>
+        <ol>
+            <li>Mendokumentasikan secara komprehensif implementasi siklus PPEPP pada periode berjalan.</li>
+            <li>Mengukur tingkat kepatuhan dan ketercapaian standar mutu institusi.</li>
+            <li>Mengidentifikasi area kelemahan (root causes) dan menyusun rekomendasi perbaikan melalui Audit Mutu Internal.</li>
+            <li>Menyediakan bukti fisik pendukung untuk keperluan Akreditasi (APT/APS) oleh BAN-PT maupun Lembaga Akreditasi Mandiri (LAM).</li>
+        </ol>
+        <h2>1.3 Ruang Lingkup</h2>
+        <p>Ruang lingkup laporan ini mencakup seluruh unit kerja akademik dan non-akademik di lingkungan {{ $setting['nama_institusi'] }} yang menjadi subjek implementasi standar pendidikan tinggi.</p>
+    </div>
+
+    {{-- BAB II: PENETAPAN --}}
+    <div class="page-break">
+        <h1>BAB II<br>PENETAPAN STANDAR MUTU</h1>
+        <p>Tahap penetapan merupakan fondasi utama dari siklus SPMI, di mana {{ $setting['nama_institusi'] }} merancang dan menyahkan dokumen standar mutu pendidikan tinggi. Berikut adalah rekapitulasi standar yang diberlakukan:</p>
         
-        <h2>1.1 Rekapitulasi Standar Mutu</h2>
+        <h2>2.1 Rekapitulasi Standar Mutu</h2>
         <table>
             <thead>
                 <tr>
@@ -169,25 +198,25 @@
             </tbody>
         </table>
         
-        <h2>1.2 Ketersediaan Dokumen Mutu</h2>
-        <p>Total dokumen mutu yang disahkan: <strong>{{ $dokumens->count() }} dokumen</strong>.</p>
+        <h2>2.2 Ketersediaan Dokumen Mutu</h2>
+        <p>Berdasarkan validasi sistem, terdapat <strong>{{ $dokumens->count() }} dokumen mutu</strong> yang berstatus disahkan (*approved*) pada periode ini, meliputi Kebijakan Mutu, Manual Mutu, Standar Mutu, dan Formulir Mutu.</p>
     </div>
 
-    {{-- BAB 2: PELAKSANAAN --}}
+    {{-- BAB III: PELAKSANAAN --}}
     <div class="page-break">
-        <h1>BAB II. PELAKSANAAN (MONITORING)</h1>
-        <p>Pemantauan (monitoring) dilakukan untuk melihat sejauh mana indikator kinerja utama dan tambahan dapat dicapai oleh unit-unit kerja.</p>
+        <h1>BAB III<br>PELAKSANAAN STANDAR MUTU</h1>
+        <p>Tahap pelaksanaan (monitoring) mendokumentasikan sejauh mana Indikator Kinerja Utama (IKU) dan Indikator Kinerja Tambahan (IKT) dicapai oleh masing-masing unit kerja pelaksana (auditee).</p>
         
-        <h2>2.1 Capaian Indikator Kinerja</h2>
+        <h2>3.1 Capaian Indikator Kinerja</h2>
         <table>
             <thead>
                 <tr>
                     <th width="5%">No</th>
-                    <th width="15%">Kode IKU</th>
+                    <th width="20%">Kode IKU/IKT</th>
                     <th width="45%">Nama Indikator</th>
                     <th width="10%">Target</th>
                     <th width="10%">Capaian</th>
-                    <th width="15%">% Capaian</th>
+                    <th width="10%">%</th>
                 </tr>
             </thead>
             <tbody>
@@ -201,26 +230,26 @@
                     <td class="text-center">{{ $mon->persentase_capaian }}%</td>
                 </tr>
                 @empty
-                <tr><td colspan="6" class="text-center">Belum ada data capaian / monitoring</td></tr>
+                <tr><td colspan="6" class="text-center">Belum ada data capaian / monitoring yang diinput.</td></tr>
                 @endforelse
             </tbody>
         </table>
     </div>
 
-    {{-- BAB 3: EVALUASI --}}
+    {{-- BAB IV: EVALUASI --}}
     <div class="page-break">
-        <h1>BAB III. EVALUASI (AUDIT MUTU INTERNAL)</h1>
-        <p>Evaluasi capaian mutu dilakukan melalui kegiatan Audit Mutu Internal (AMI) untuk memastikan kepatuhan pelaksanaan terhadap standar yang ditetapkan.</p>
+        <h1>BAB IV<br>EVALUASI (AUDIT MUTU INTERNAL)</h1>
+        <p>Evaluasi capaian mutu dilakukan secara objektif melalui kegiatan Audit Mutu Internal (AMI). Hal ini bertujuan untuk memastikan kesesuaian antara pelaksanaan dengan standar, serta mengidentifikasi Ketidaksesuaian (KTS).</p>
         
-        <h2>3.1 Pelaksanaan AMI</h2>
+        <h2>4.1 Pelaksanaan AMI</h2>
         <table>
             <thead>
                 <tr>
                     <th width="5%">No</th>
                     <th width="30%">Nama Audit</th>
-                    <th width="25%">Unit Diaudit</th>
+                    <th width="25%">Unit Auditee</th>
                     <th width="25%">Ketua Auditor</th>
-                    <th width="15%">Jml Temuan</th>
+                    <th width="15%">Temuan</th>
                 </tr>
             </thead>
             <tbody>
@@ -233,31 +262,33 @@
                     <td class="text-center">{{ $audit->temuans->count() }}</td>
                 </tr>
                 @empty
-                <tr><td colspan="5" class="text-center">Belum ada data audit</td></tr>
+                <tr><td colspan="5" class="text-center">Belum ada kegiatan audit yang dicatat.</td></tr>
                 @endforelse
             </tbody>
         </table>
         
-        <h2>3.2 Rekapitulasi Kategori Temuan</h2>
+        <h2>4.2 Rekapitulasi Kategori Temuan</h2>
+        <p>Selama periode AMI ini, tim auditor menemukan dan mengklasifikasikan temuan sebagai berikut:</p>
         <ul>
-            <li>KTS Mayor: {{ $temuanPerKategori['KTS_Mayor'] ?? 0 }}</li>
-            <li>KTS Minor: {{ $temuanPerKategori['KTS_Minor'] ?? 0 }}</li>
-            <li>Observasi: {{ $temuanPerKategori['OB'] ?? 0 }}</li>
-            <li>Rekomendasi: {{ $temuanPerKategori['Rekomendasi'] ?? 0 }}</li>
+            <li><strong>Ketidaksesuaian Mayor (KTS Mayor):</strong> {{ $temuanPerKategori['KTS_Mayor'] ?? 0 }} temuan</li>
+            <li><strong>Ketidaksesuaian Minor (KTS Minor):</strong> {{ $temuanPerKategori['KTS_Minor'] ?? 0 }} temuan</li>
+            <li><strong>Observasi (OB):</strong> {{ $temuanPerKategori['OB'] ?? 0 }} temuan</li>
+            <li><strong>Rekomendasi Peningkatan:</strong> {{ $temuanPerKategori['Rekomendasi'] ?? 0 }} rekomendasi</li>
         </ul>
     </div>
 
-    {{-- BAB 4: PENGENDALIAN --}}
+    {{-- BAB V: PENGENDALIAN --}}
     <div class="page-break">
-        <h1>BAB IV. PENGENDALIAN (TINDAK LANJUT)</h1>
-        <p>Tindakan perbaikan dan pencegahan (Pengendalian) dilakukan terhadap temuan AMI untuk memastikan perbaikan mutu secara berkesinambungan.</p>
+        <h1>BAB V<br>PENGENDALIAN (TINDAK LANJUT)</h1>
+        <p>Tindakan perbaikan (Koreksi) dan tindakan pencegahan dilakukan terhadap setiap temuan AMI. Pengendalian ini dikawal langsung oleh pimpinan unit kerja untuk memulihkan standar yang belum tercapai.</p>
         
+        <h2>5.1 Rencana Tindak Lanjut Unit Kerja</h2>
         <table>
             <thead>
                 <tr>
                     <th width="5%">No</th>
-                    <th width="35%">Temuan</th>
-                    <th width="35%">Rencana Tindakan</th>
+                    <th width="35%">Deskripsi Temuan (Akar Masalah)</th>
+                    <th width="35%">Rencana Tindakan Perbaikan</th>
                     <th width="15%">Target Selesai</th>
                     <th width="10%">Status</th>
                 </tr>
@@ -272,27 +303,34 @@
                     <td class="text-center text-uppercase">{{ $tl->status }}</td>
                 </tr>
                 @empty
-                <tr><td colspan="5" class="text-center">Belum ada data tindak lanjut</td></tr>
+                <tr><td colspan="5" class="text-center">Belum ada data tindak lanjut yang dicatat.</td></tr>
                 @endforelse
             </tbody>
         </table>
     </div>
 
-    {{-- BAB 5: PENINGKATAN --}}
-    <div>
-        <h1>BAB V. PENINGKATAN (RAPAT TINJAUAN MANAJEMEN)</h1>
-        <p>Hasil akhir siklus PPEPP dibawa ke dalam Rapat Tinjauan Manajemen (RTM) guna merumuskan peningkatan standar di periode berikutnya.</p>
+    {{-- BAB VI: PENINGKATAN --}}
+    <div class="page-break">
+        <h1>BAB VI<br>PENINGKATAN (RAPAT TINJAUAN MANAJEMEN)</h1>
+        <p>Berdasarkan hasil evaluasi dan pengendalian, Pimpinan Institusi menyelenggarakan Rapat Tinjauan Manajemen (RTM). Hasil RTM berfungsi sebagai rujukan bagi penyusunan/peningkatan standar mutu di siklus/periode berikutnya, yang biasa disebut dengan konsep *Kaizen* (Peningkatan Mutu Berkelanjutan).</p>
         
         @forelse($rtms as $rtm)
-            <div style="border: 1px solid #ccc; padding: 15px; margin-bottom: 20px;">
-                <h3>Judul RTM: {{ $rtm->judul_rapat }}</h3>
-                <p><strong>Tanggal:</strong> {{ $rtm->tanggal_rapat ? $rtm->tanggal_rapat->format('d F Y') : '-' }}</p>
-                <p><strong>Agenda:</strong><br>{{ $rtm->agenda }}</p>
-                <p><strong>Keputusan / Output Peningkatan:</strong><br>{{ $rtm->keputusan_manajemen ?? 'Belum ada keputusan yang difinalisasi.' }}</p>
+            <div style="border: 1px solid #000; padding: 15px; margin-top: 15px;">
+                <h3 style="margin-top:0;">Topik: {{ $rtm->judul_rapat }}</h3>
+                <p><strong>Tanggal Pelaksanaan:</strong> {{ $rtm->tanggal_rapat ? $rtm->tanggal_rapat->format('d F Y') : '-' }}</p>
+                <p><strong>Agenda Pembahasan:</strong><br>{!! nl2br(e($rtm->agenda)) !!}</p>
+                <p><strong>Keputusan dan Output Peningkatan:</strong><br>{!! nl2br(e($rtm->keputusan_manajemen ?? 'Belum ada keputusan.')) !!}</p>
             </div>
         @empty
-            <p class="text-center">Belum ada catatan Rapat Tinjauan Manajemen pada periode ini.</p>
+            <p class="text-center" style="margin-top: 20px;">Belum ada dokumen Rapat Tinjauan Manajemen pada periode ini.</p>
         @endforelse
+    </div>
+
+    {{-- BAB VII: PENUTUP --}}
+    <div>
+        <h1>BAB VII<br>PENUTUP</h1>
+        <p>Demikian Laporan Pelaksanaan Audit Mutu Internal (AMI) Siklus PPEPP ini disusun. Ketercapaian berbagai indikator mutu dan penuntasan temuan AMI diharapkan mampu mendorong peningkatan daya saing dan keunggulan institusi ke depan.</p>
+        <p>Penyempurnaan pelaksanaan Sistem Penjaminan Mutu Internal akan terus diupayakan sebagai wujud akuntabilitas publik dan bentuk tanggung jawab moral penyelenggara pendidikan tinggi demi menghasilkan lulusan yang bermutu.</p>
     </div>
 
 </body>
