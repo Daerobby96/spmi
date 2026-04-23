@@ -135,6 +135,61 @@ class SiakadImportService
                         }
                     }
                 }
+            // ==========================================
+            // AUTO-SCORING: Integrasi ke Indikator Kinerja
+            // ==========================================
+            // Hitung rata-rata keseluruhan (Grand Average)
+            $totalSkor = \App\Models\KuesionerJawabanDetail::whereHas('pertanyaan', function($q) use ($kuesioner) {
+                $q->where('kuesioner_id', $kuesioner->id)->where('tipe', 'likert');
+            })->sum('skor');
+
+            $totalJawaban = \App\Models\KuesionerJawabanDetail::whereHas('pertanyaan', function($q) use ($kuesioner) {
+                $q->where('kuesioner_id', $kuesioner->id)->where('tipe', 'likert');
+            })->count();
+
+            $rataRata = $totalJawaban > 0 ? round($totalSkor / $totalJawaban, 2) : 0;
+
+            if ($rataRata > 0) {
+                // Cari Indikator Kepuasan Layanan / Mahasiswa yang aktif
+                $indikator = \App\Models\IndikatorKinerja::where('is_aktif', true)
+                    ->where(function($q) {
+                        $q->where('nama', 'like', '%kepuasan%')
+                          ->orWhere('nama', 'like', '%layanan%');
+                    })
+                    ->first();
+
+                // Jika tidak ada, buatkan otomatis sebagai template dasar
+                if (!$indikator) {
+                    $standar = \App\Models\Standar::first();
+                    if ($standar) {
+                        $indikator = \App\Models\IndikatorKinerja::create([
+                            'kode' => 'IKU-KPSN',
+                            'nama' => 'Tingkat Kepuasan Layanan Mahasiswa',
+                            'unit_pengukuran' => 'Skala 5.0', // Kuesioner Siakad 1-5
+                            'target_nilai' => 3.50,
+                            'unit_kerja' => 'Semua Unit',
+                            'standar_id' => $standar->id,
+                            'is_aktif' => true
+                        ]);
+                    }
+                }
+
+                if ($indikator) {
+                    // Sinkronisasi otomatis ke tabel Monitoring IKU/IKT
+                    \App\Models\Monitoring::updateOrCreate(
+                        [
+                            'periode_id' => $periode->id,
+                            'indikator_id' => $indikator->id,
+                        ],
+                        [
+                            'pelapor_id' => auth()->id() ?? \App\Models\User::first()->id ?? 1,
+                            'nilai_capaian' => $rataRata,
+                            'keterangan' => 'Auto-Scoring hasil import otomatis dari Kuesioner: ' . $metadata['judul'],
+                            'tanggal_input' => now(),
+                            'status' => 'verified' // Langsung terverifikasi karena dari sistem Siakad
+                        ]
+                    );
+                }
             }
 
             return $kuesioner;
