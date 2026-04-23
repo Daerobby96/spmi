@@ -33,14 +33,14 @@ class SiakadImportService
         return DB::transaction(function () use ($xpath, $metadata, $periode) {
             $deskripsi = "Import dari Siakad - Unit: " . ($metadata['unit'] ?? 'Semua');
 
-            // Hapus kuesioner lama jika sudah pernah diimport (mencegah duplikasi)
-            $existing = Kuesioner::where('judul', $metadata['judul'])
+            // Hapus SEMUA kuesioner lama jika sudah pernah diimport berkali-kali sebelumnya
+            $existings = Kuesioner::where('judul', $metadata['judul'])
                 ->where('periode_id', $periode->id)
                 ->where('deskripsi', $deskripsi)
-                ->first();
+                ->get();
                 
-            if ($existing) {
-                $existing->delete(); // Menghapus data lama secara cascade
+            foreach ($existings as $oldData) {
+                $oldData->delete(); // Menghapus data lama secara cascade
             }
 
             // 3. Create Kuesioner Baru
@@ -179,8 +179,7 @@ class SiakadImportService
         }
 
         // 2. Coba tebak berdasarkan format tahun miring (2025/2026) dan kata Ganjil/Genap
-        preg_match('/(\d{4})\/(\d{4})/', $judul, $matches);
-        if (count($matches) == 3) {
+        if (preg_match('/(\d{4})\/(\d{4})/', $judul, $matches)) {
             $tahunAwal = $matches[1];
             $tahunAkhir = $matches[2];
             $semester = str_contains(strtolower($judul), 'ganjil') ? 'ganjil' : 'genap';
@@ -188,6 +187,17 @@ class SiakadImportService
             // Sesuai konvensi: Ganjil = tahun awal, Genap = tahun akhir
             $tahun = $semester == 'ganjil' ? $tahunAwal : $tahunAkhir;
 
+            $existing = Periode::where('tahun', $tahun)
+                ->where('semester', $semester)
+                ->first();
+
+            if ($existing) return $existing;
+            
+        } elseif (preg_match('/(\d{4})/', $judul, $matches)) {
+            // 2b. Coba tebak dari 1 tahun tunggal (misal: "2024 Genap")
+            $tahun = $matches[1];
+            $semester = str_contains(strtolower($judul), 'ganjil') ? 'ganjil' : 'genap';
+            
             $existing = Periode::where('tahun', $tahun)
                 ->where('semester', $semester)
                 ->first();

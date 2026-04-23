@@ -167,8 +167,6 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/summarize', [App\Http\Controllers\AiController::class, 'summarize'])->name('summarize');
         Route::post('/audit-summary', [App\Http\Controllers\AiController::class, 'generateAuditSummary'])->name('audit-summary');
     });
-
-    });
 });
 
 // Public Document Access (Placed after management to avoid conflict with /create)
