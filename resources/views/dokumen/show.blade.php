@@ -101,6 +101,22 @@
                         </td>
                     </tr>
                     <tr>
+                        <th>Visibilitas</th>
+                        <td>
+                            @if($dokumen->is_public)
+                                <span class="badge bg-info-subtle text-info border border-info-subtle px-3">
+                                    <i class="bi bi-globe me-1"></i>Publik
+                                </span>
+                                <small class="text-muted ms-2">(Dapat diakses tanpa login)</small>
+                            @else
+                                <span class="badge bg-light text-muted border px-3">
+                                    <i class="bi bi-lock-fill me-1"></i>Internal
+                                </span>
+                                <small class="text-muted ms-2">(Hanya pengguna terautentikasi)</small>
+                            @endif
+                        </td>
+                    </tr>
+                    <tr>
                         <th>Tanggal Terbit</th>
                         <td>{{ $dokumen->tanggal_terbit->translatedFormat('d F Y') }}</td>
                     </tr>

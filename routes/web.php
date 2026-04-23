@@ -168,7 +168,9 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/audit-summary', [App\Http\Controllers\AiController::class, 'generateAuditSummary'])->name('audit-summary');
     });
 
-    // Public Document Access (Placed after management to avoid conflict with /create)
-    Route::get('dokumen/{dokumen}', [DokumenController::class, 'show'])->name('dokumen.show');
-    Route::get('dokumen/{dokumen}/download', [DokumenController::class, 'download'])->name('dokumen.download');
+    });
 });
+
+// Public Document Access (Placed after management to avoid conflict with /create)
+Route::get('dokumen/{dokumen}', [DokumenController::class, 'show'])->name('dokumen.show');
+Route::get('dokumen/{dokumen}/download', [DokumenController::class, 'download'])->name('dokumen.download');

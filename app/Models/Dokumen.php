@@ -14,12 +14,13 @@ class Dokumen extends Model
         'kategori_id', 'pembuat_id', 'kode_dokumen',
         'judul', 'unit_pemilik', 'versi', 'tanggal_terbit',
         'tanggal_kadaluarsa', 'file_path', 'file_size', 'file_type',
-        'status', 'keterangan', 'download_count',
+        'status', 'is_public', 'keterangan', 'download_count',
     ];
 
     protected $casts = [
         'tanggal_terbit'      => 'date',
         'tanggal_kadaluarsa'  => 'date',
+        'is_public'           => 'boolean',
     ];
 
     public function kategori(): BelongsTo

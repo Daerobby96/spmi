@@ -133,6 +133,7 @@
                         <th>Versi</th>
                         <th>Tgl Terbit</th>
                         <th>Status</th>
+                        <th>Visibilitas</th>
                         <th style="width: 120px;">Aksi</th>
                     </tr>
                 </thead>
@@ -194,6 +195,17 @@
                                 $sc = $statusConfig[$dok->status] ?? ['secondary', $dok->status];
                             @endphp
                             <span class="badge bg-{{ $sc[0] }}">{{ $sc[1] }}</span>
+                        </td>
+                        <td>
+                            @if($dok->is_public)
+                                <span class="badge bg-info-subtle text-info border border-info-subtle">
+                                    <i class="bi bi-globe me-1"></i>Publik
+                                </span>
+                            @else
+                                <span class="badge bg-light text-muted border">
+                                    <i class="bi bi-lock-fill me-1"></i>Internal
+                                </span>
+                            @endif
                         </td>
                         <td>
                             <div class="d-flex gap-1">

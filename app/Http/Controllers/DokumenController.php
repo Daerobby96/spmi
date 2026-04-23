@@ -78,6 +78,7 @@ class DokumenController extends Controller
             'tanggal_terbit'     => 'required|date',
             'tanggal_kadaluarsa' => 'nullable|date|after:tanggal_terbit',
             'status'             => 'required|in:draft,review,approved,obsolete',
+            'is_public'          => 'nullable|boolean',
             'keterangan'         => 'nullable|string',
             'file'               => [
                 'nullable', 'file', 'mimes:pdf,doc,docx,xls,xlsx,ppt,pptx', 'max:20480',
@@ -125,6 +126,7 @@ class DokumenController extends Controller
                 'tanggal_terbit'     => $request->tanggal_terbit,
                 'tanggal_kadaluarsa' => $request->tanggal_kadaluarsa,
                 'status'             => $request->status,
+                'is_public'          => $request->boolean('is_public'),
                 'keterangan'         => $request->keterangan,
                 'file_path'          => $filePath,
                 'file_size'          => $fileSize,
@@ -144,7 +146,7 @@ class DokumenController extends Controller
 
     public function show(Dokumen $dokumen)
     {
-        if (!Auth::check() && $dokumen->status !== 'approved') {
+        if (!$dokumen->is_public && !Auth::check()) {
             abort(403, 'Anda tidak memiliki hak akses untuk melihat dokumen ini.');
         }
         $dokumen->load(['kategori', 'standars', 'pembuat']);
@@ -174,6 +176,7 @@ class DokumenController extends Controller
             'tanggal_terbit'     => 'required|date',
             'tanggal_kadaluarsa' => 'nullable|date|after:tanggal_terbit',
             'status'             => 'required|in:draft,review,approved,obsolete',
+            'is_public'          => 'nullable|boolean',
             'keterangan'         => 'nullable|string',
             'file'               => [
                 'nullable', 'file', 'mimes:pdf,doc,docx,xls,xlsx,ppt,pptx', 'max:20480',
@@ -198,8 +201,9 @@ class DokumenController extends Controller
             $data = $request->only([
                 'kategori_id', 'judul', 'unit_pemilik',
                 'versi', 'tanggal_terbit', 'tanggal_kadaluarsa',
-                'status', 'keterangan',
+                'status', 'is_public', 'keterangan',
             ]);
+            $data['is_public'] = $request->boolean('is_public');
 
             if ($request->hasFile('file')) {
                 if ($dokumen->file_path && Storage::disk('public')->exists($dokumen->file_path)) {
@@ -236,7 +240,7 @@ class DokumenController extends Controller
 
     public function download(Dokumen $dokumen)
     {
-        if (!Auth::check() && $dokumen->status !== 'approved') {
+        if (!$dokumen->is_public && !Auth::check()) {
             abort(403);
         }
 

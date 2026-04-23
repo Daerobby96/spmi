@@ -16,7 +16,7 @@ class PublicController extends Controller
         $stats = [];
         
         // Statistik Dokumen
-        $stats['total_dokumen'] = Dokumen::where('status', 'approved')->count();
+        $stats['total_dokumen'] = Dokumen::where('status', 'approved')->where('is_public', true)->count();
         
         // Statistik Audit
         $auditSelesai = Audit::where('status', 'selesai')->count();
@@ -66,7 +66,9 @@ class PublicController extends Controller
 
     public function documents(Request $request)
     {
-        $query = Dokumen::where('status', 'approved')->with('kategori', 'standar');
+        $query = Dokumen::where('status', 'approved')
+            ->where('is_public', true)
+            ->with('kategori', 'standar');
         if ($request->filled('search')) {
             $query->where('judul', 'like', '%' . $request->search . '%')
                 ->orWhere('kode_dokumen', 'like', '%' . $request->search . '%');

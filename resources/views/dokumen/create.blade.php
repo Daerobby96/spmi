@@ -106,6 +106,14 @@
                             @error('status') <div class="invalid-feedback">{{ $message }}</div> @enderror
                         </div>
 
+                        <div class="col-md-3 d-flex align-items-end">
+                            <div class="form-check form-switch mb-2">
+                                <input class="form-check-input" type="checkbox" name="is_public" id="is_public" value="1" {{ old('is_public') ? 'checked' : '' }}>
+                                <label class="form-check-label fw-bold" for="is_public">Akses Publik</label>
+                                <div class="form-text small">Dapat diakses tanpa login</div>
+                            </div>
+                        </div>
+
                         <div class="col-md-6">
                             <label class="form-label">Tanggal Terbit <span class="text-danger">*</span></label>
                             <input type="date" name="tanggal_terbit"
