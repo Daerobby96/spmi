@@ -159,22 +159,6 @@ class SiakadImportService
                     })
                     ->first();
 
-                // Jika tidak ada, buatkan otomatis sebagai template dasar
-                if (!$indikator) {
-                    $standar = \App\Models\Standar::first();
-                    if ($standar) {
-                        $indikator = \App\Models\IndikatorKinerja::create([
-                            'kode' => 'IKU-KPSN',
-                            'nama' => 'Tingkat Kepuasan Layanan Mahasiswa',
-                            'unit_pengukuran' => 'Skala 5.0', // Kuesioner Siakad 1-5
-                            'target_nilai' => 3.50,
-                            'unit_kerja' => 'Semua Unit',
-                            'standar_id' => $standar->id,
-                            'is_aktif' => true
-                        ]);
-                    }
-                }
-
                 if ($indikator) {
                     // Sinkronisasi otomatis ke tabel Monitoring IKU/IKT
                     \App\Models\Monitoring::updateOrCreate(
