@@ -204,7 +204,22 @@
         </div>
     </div>
 
-   
+    <div class="col-md-4">
+        <div class="card card-custom h-100 border-0 shadow-sm hover-lift" style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);">
+            <div class="card-body text-center py-4">
+                <div class="fs-1 text-danger mb-3">
+                    <i class="bi bi-book"></i>
+                </div>
+                <h5>Buku Laporan AMI</h5>
+                <p class="text-muted small mb-3">
+                    Kompilasi lengkap seluruh siklus PPEPP (Penetapan hingga Peningkatan) dalam 1 Dokumen PDF.
+                </p>
+                <a href="{{ route('laporan.export.pdf', ['type' => 'buku-ami', 'periode_id' => request('periode_id')]) }}" class="btn btn-danger btn-lg shadow-sm w-100" target="_blank">
+                    <i class="bi bi-magic me-1"></i>Generate 1-Klik
+                </a>
+            </div>
+        </div>
+    </div>
 </div>
 
 @push('styles')

@@ -222,6 +222,58 @@ class LaporanController extends Controller
                 $filename = 'laporan-edom-' . date('Y-m-d') . '.pdf';
                 break;
 
+            case 'buku-ami':
+                $periodeId = $request->periode_id ?? Periode::aktif()?->id;
+                $data['periode'] = Periode::find($periodeId);
+                
+                // P: Penetapan
+                $data['dokumens'] = Dokumen::where('status', 'approved')->get();
+                $data['standars'] = \App\Models\Standar::with('indikators')->where('is_aktif', true)->get();
+                
+                // P: Pelaksanaan
+                $data['monitorings'] = Monitoring::with('indikator')
+                    ->when($periodeId, fn($q) => $q->where('periode_id', $periodeId))
+                    ->get();
+                $data['kuesioners'] = \App\Models\Kuesioner::when($periodeId, fn($q) => $q->where('periode_id', $periodeId))->get();
+                
+                // E: Evaluasi (Audit & Temuan)
+                $data['audits'] = Audit::with(['ketuaAuditor', 'temuans'])
+                    ->when($periodeId, fn($q) => $q->where('periode_id', $periodeId))
+                    ->get();
+                $data['temuanPerKategori'] = Temuan::whereHas('audit', fn($q) => $q->when($periodeId, fn($q2) => $q2->where('periode_id', $periodeId)))
+                    ->selectRaw('kategori, COUNT(*) as total')->groupBy('kategori')->pluck('total', 'kategori');
+                
+                // P: Pengendalian (Tindak Lanjut)
+                $data['tindakLanjuts'] = \App\Models\TindakLanjut::with(['temuan.audit', 'penanggungJawab'])
+                    ->whereHas('temuan.audit', fn($q) => $q->when($periodeId, fn($q2) => $q2->where('periode_id', $periodeId)))
+                    ->get();
+                
+                // P: Peningkatan (RTM)
+                $data['rtms'] = \App\Models\RTM::when($periodeId, fn($q) => $q->where('periode_id', $periodeId))->get();
+
+                Setting::clearCache();
+                $data['setting'] = [
+                    'nama_institusi' => Setting::get('nama_institusi', 'NAMA PERGURUAN TINGGI'),
+                    'alamat_institusi' => Setting::get('alamat_institusi', 'Alamat Institusi'),
+                    'kota_institusi' => Setting::get('kota_institusi', 'Kota'),
+                    'logo_institusi' => Setting::get('logo_institusi', null),
+                ];
+
+                $kepalaInstitusi = User::where('is_active', true)
+                    ->where(function ($q) {
+                        $q->where('jabatan', 'like', '%Kepala%')
+                            ->orWhere('jabatan', 'like', '%Rektor%')
+                            ->orWhere('jabatan', 'like', '%Direktur%');
+                    })->first();
+                $data['kepala_institusi'] = $kepalaInstitusi;
+                
+                $superAdminRole = Role::where('name', Role::SUPER_ADMIN)->first();
+                $data['ketua_spmi'] = $superAdminRole ? User::where('role_id', $superAdminRole->id)->where('is_active', true)->first() : null;
+
+                $view = 'laporan.pdf.buku-ami';
+                $filename = 'Buku-Laporan-AMI-' . ($data['periode'] ? $data['periode']->tahun : date('Y')) . '.pdf';
+                break;
+
             default:
                 return back()->with('error', 'Tipe laporan tidak valid.');
         }
