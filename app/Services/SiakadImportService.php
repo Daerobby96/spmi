@@ -31,11 +31,23 @@ class SiakadImportService
         $periode = $this->getOrCreatePeriode($metadata['judul']);
 
         return DB::transaction(function () use ($xpath, $metadata, $periode) {
-            // 3. Create Kuesioner
+            $deskripsi = "Import dari Siakad - Unit: " . ($metadata['unit'] ?? 'Semua');
+
+            // Hapus kuesioner lama jika sudah pernah diimport (mencegah duplikasi)
+            $existing = Kuesioner::where('judul', $metadata['judul'])
+                ->where('periode_id', $periode->id)
+                ->where('deskripsi', $deskripsi)
+                ->first();
+                
+            if ($existing) {
+                $existing->delete(); // Menghapus data lama secara cascade
+            }
+
+            // 3. Create Kuesioner Baru
             $kuesioner = Kuesioner::create([
                 'judul' => $metadata['judul'],
                 'periode_id' => $periode->id,
-                'deskripsi' => "Import dari Siakad - Unit: " . ($metadata['unit'] ?? 'Semua'),
+                'deskripsi' => $deskripsi,
                 'target_role' => 'mahasiswa', // Default for Siakad kuesioner layanan
                 'status' => 'selesai',
             ]);
@@ -157,30 +169,39 @@ class SiakadImportService
 
     private function getOrCreatePeriode($judul)
     {
-        // Extract year from title (e.g. "2025 Ganjil")
-        preg_match('/(\d{4})/', $judul, $matches);
-        $tahun = $matches[1] ?? date('Y');
-        $semester = str_contains(strtolower($judul), 'ganjil') ? 'ganjil' : 'genap';
+        // 1. Coba cari periode yang namanya disebutkan persis di dalam judul kuesioner
+        // Contoh judul: "Laporan Kuesioner Kepuasan Mahasiswa Semester Genap 2025/2026"
+        $periodes = Periode::all();
+        foreach ($periodes as $p) {
+            if (stripos($judul, $p->nama) !== false) {
+                return $p;
+            }
+        }
 
-        // 1. Try to find existing period by year and semester
-        $existing = Periode::where('tahun', $tahun)
-            ->where('semester', $semester)
-            ->first();
+        // 2. Coba tebak berdasarkan format tahun miring (2025/2026) dan kata Ganjil/Genap
+        preg_match('/(\d{4})\/(\d{4})/', $judul, $matches);
+        if (count($matches) == 3) {
+            $tahunAwal = $matches[1];
+            $tahunAkhir = $matches[2];
+            $semester = str_contains(strtolower($judul), 'ganjil') ? 'ganjil' : 'genap';
+            
+            // Sesuai konvensi: Ganjil = tahun awal, Genap = tahun akhir
+            $tahun = $semester == 'ganjil' ? $tahunAwal : $tahunAkhir;
 
-        if ($existing) return $existing;
+            $existing = Periode::where('tahun', $tahun)
+                ->where('semester', $semester)
+                ->first();
 
-        // 2. Create if not found
-        $nama = ($semester == 'ganjil' ? 'Ganjil ' : 'Genap ') . $tahun;
-        $tanggalMulai = $semester == 'ganjil' ? "$tahun-07-01" : "$tahun-01-01";
-        $tanggalSelesai = $semester == 'ganjil' ? "$tahun-12-31" : "$tahun-06-30";
+            if ($existing) return $existing;
+        }
 
-        return Periode::create([
-            'nama' => $nama,
-            'tahun' => $tahun, 
-            'semester' => $semester, 
-            'tanggal_mulai' => $tanggalMulai,
-            'tanggal_selesai' => $tanggalSelesai,
-            'is_aktif' => false
-        ]);
+        // 3. Fallback ke periode yang sedang aktif saat ini
+        $activePeriode = Periode::where('is_aktif', true)->first();
+        if ($activePeriode) {
+            return $activePeriode;
+        }
+
+        // 4. Batalkan proses daripada membuat periode sampah yang merusak database
+        throw new \Exception("Gagal menentukan Periode secara otomatis dari judul: '$judul'. Pastikan nama Periode di sistem sama dengan judul Siakad, atau aktifkan salah satu Periode di menu Manajemen Periode terlebih dahulu.");
     }
 }

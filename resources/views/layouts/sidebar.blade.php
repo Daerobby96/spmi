@@ -161,12 +161,14 @@
 
         {{-- Partisipasi User (Survei) --}}
         <li class="sidebar-heading">Umpan Balik</li>
+        @if(!auth()->user()->isSuperAdmin())
         <li class="sidebar-item {{ request()->routeIs('user-kuesioner.*') ? 'active' : '' }}">
             <a href="{{ route('user-kuesioner.index') }}" class="sidebar-link" data-title="Survei & Kuesioner">
                 <i class="bi bi-clipboard2-data"></i>
                 <span>Survei & Kuesioner</span>
             </a>
         </li>
+        @endif
         <li class="sidebar-item {{ request()->routeIs('kinerja-dosen.*') ? 'active' : '' }}">
             <a href="{{ route('kinerja-dosen.index') }}" class="sidebar-link" data-title="Kinerja Dosen (EDOM)">
                 <i class="bi bi-person-badge"></i>
