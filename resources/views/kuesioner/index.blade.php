@@ -114,7 +114,7 @@
                 </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form action="{{ route('kuesioner.import-siakad') }}" method="POST" enctype="multipart/form-data">
+            <form action="{{ route('kuesioner.import-siakad') }}" method="POST" enctype="multipart/form-data" onsubmit="let btn = this.querySelector('button[type=submit]'); btn.disabled = true; btn.innerHTML = '<i class=\'bi bi-hourglass-split me-2\'></i>Memproses...';">
                 @csrf
                 <div class="modal-body p-4">
                     <div class="alert alert-info border-0 shadow-sm mb-4">
