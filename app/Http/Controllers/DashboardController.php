@@ -50,6 +50,23 @@ class DashboardController extends Controller
             'total_user'          => User::where('is_active', true)->count(),
         ];
 
+        // ─── Status PPEPP ─────────────────────────────────────────────
+        $ppeppStatus = [
+            'penetapan'   => false,
+            'pelaksanaan' => false,
+            'evaluasi'    => false,
+            'pengendalian'=> false,
+            'peningkatan' => false,
+        ];
+
+        if ($periode) {
+            $ppeppStatus['penetapan']   = Standar::count() > 0 || \App\Models\IndikatorKinerja::where('periode_id', $periode->id)->count() > 0;
+            $ppeppStatus['pelaksanaan'] = Monitoring::where('periode_id', $periode->id)->count() > 0;
+            $ppeppStatus['evaluasi']    = Audit::where('periode_id', $periode->id)->whereIn('status', ['aktif', 'selesai'])->count() > 0;
+            $ppeppStatus['pengendalian']= \App\Models\TindakLanjut::whereHas('temuan.audit', fn($q) => $q->where('periode_id', $periode->id))->count() > 0;
+            $ppeppStatus['peningkatan'] = \App\Models\RTM::where('periode_id', $periode->id)->count() > 0;
+        }
+
         // ─── Data Periode & Radar Chart ──────────────────────────────
         $lastPeriodes = Periode::orderBy('tahun', 'desc')
             ->orderBy('semester', 'desc')
@@ -144,7 +161,8 @@ class DashboardController extends Controller
         return view('dashboard.index', compact(
             'periode', 'stats', 'temuanPerKategori', 'auditTerbaru', 
             'temuanDeadline', 'trenLabels', 'trenData', 'perfTrendData',
-            'listDokumenKadaluarsa', 'radarLabels', 'radarData', 'standarProgress'
+            'listDokumenKadaluarsa', 'radarLabels', 'radarData', 'standarProgress',
+            'ppeppStatus'
         ));
     }
 

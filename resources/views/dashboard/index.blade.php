@@ -38,6 +38,66 @@
     <div class="absolute -bottom-10 left-1/2 h-32 w-32 -translate-x-1/2 rounded-full bg-primary/10 blur-2xl"></div>
 </div>
 
+{{-- ── Status Siklus PPEPP ── --}}
+<div class="card card-custom border-0 shadow-sm mb-6 bg-white overflow-hidden relative">
+    <div class="card-header-custom bg-white border-0 py-3 px-4 d-flex justify-content-between align-items-center">
+        <div>
+            <h6 class="mb-0 fw-bold text-dark"><i class="bi bi-arrow-repeat me-2 text-primary"></i>Status Siklus PPEPP Periode Berjalan</h6>
+            <small class="text-muted">Pantauan otomatis alur penjaminan mutu</small>
+        </div>
+        <div class="badge bg-primary-subtle text-primary px-3 py-2 rounded-pill">
+            <i class="bi bi-info-circle me-1"></i>Real-time
+        </div>
+    </div>
+    <div class="card-body p-4 p-lg-5">
+        <div class="position-relative d-flex justify-content-between align-items-start w-100 ppepp-tracker">
+            <!-- Line background -->
+            <div class="ppepp-line position-absolute start-0 w-100" style="height: 4px; background: #e2e8f0; z-index: 1; top: 25px;"></div>
+            
+            @php
+                $steps = [
+                    ['id' => 'penetapan', 'label' => 'Penetapan', 'icon' => 'bi-file-earmark-check', 'desc' => 'Standar & IKU'],
+                    ['id' => 'pelaksanaan', 'label' => 'Pelaksanaan', 'icon' => 'bi-play-circle', 'desc' => 'Monitoring'],
+                    ['id' => 'evaluasi', 'label' => 'Evaluasi', 'icon' => 'bi-search', 'desc' => 'Audit Mutu'],
+                    ['id' => 'pengendalian', 'label' => 'Pengendalian', 'icon' => 'bi-shield-check', 'desc' => 'Tindak Lanjut'],
+                    ['id' => 'peningkatan', 'label' => 'Peningkatan', 'icon' => 'bi-graph-up-arrow', 'desc' => 'RTM']
+                ];
+                $activeFound = false;
+            @endphp
+
+            @foreach($steps as $index => $step)
+                @php
+                    $isCompleted = $ppeppStatus[$step['id']];
+                    $isActive = !$isCompleted && !$activeFound;
+                    if($isActive) $activeFound = true;
+                    
+                    $statusClass = $isCompleted ? 'completed' : ($isActive ? 'active' : 'pending');
+                    $colorClass = $isCompleted ? 'bg-success' : ($isActive ? 'bg-primary' : 'bg-slate-200 text-slate-400');
+                    $textColor = $isCompleted || $isActive ? 'text-white' : '';
+                @endphp
+                
+                <div class="ppepp-step text-center position-relative {{ $statusClass }}" style="z-index: 2; flex: 1; min-width: 80px;">
+                    <div class="step-icon-wrapper mx-auto mb-3 d-flex align-items-center justify-content-center shadow-sm {{ $colorClass }} {{ $textColor }} transition-all duration-300" 
+                         style="width: 54px; height: 54px; border-radius: 50%; border: 4px solid #fff;">
+                        <i class="bi {{ $step['icon'] }} fs-5"></i>
+                    </div>
+                    <div class="step-label fw-bold {{ $isCompleted || $isActive ? 'text-dark' : 'text-muted' }}" style="font-size: 0.9rem;">{{ $step['label'] }}</div>
+                    <div class="step-desc text-muted mt-1 d-none d-md-block" style="font-size: 0.75rem;">{{ $step['desc'] }}</div>
+                    
+                    @if($isActive)
+                        <span class="position-absolute top-0 start-50 translate-middle badge rounded-pill bg-warning text-dark shadow-sm animate-bounce" style="margin-top: -15px;">Aktif</span>
+                    @endif
+                    @if($isCompleted)
+                        <span class="position-absolute top-0 start-50 translate-middle badge rounded-circle bg-success text-white shadow-sm border border-2 border-white p-1" style="margin-top: -5px; margin-left: 20px;">
+                            <i class="bi bi-check" style="font-size: 10px;"></i>
+                        </span>
+                    @endif
+                </div>
+            @endforeach
+        </div>
+    </div>
+</div>
+
 {{-- ── Stat Cards ── --}}
 <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
     <div class="group relative overflow-hidden rounded-2xl bg-white p-5 shadow-[0_1px_3px_rgba(0,0,0,0.05),0_1px_2px_rgba(0,0,0,0.04)] transition-all hover:-translate-y-1 hover:shadow-xl border-t-4 border-blue-500">
@@ -321,6 +381,61 @@
     }
     canvas {
         filter: drop-shadow(0 5px 15px rgba(0,0,0,0.02));
+    }
+    
+    /* PPEPP Tracker Styles */
+    .ppepp-step .step-icon-wrapper {
+        transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+    }
+    .ppepp-step.active .step-icon-wrapper {
+        transform: scale(1.15);
+        box-shadow: 0 0 0 4px rgba(13, 110, 253, 0.2) !important;
+        animation: pulse-primary 2s infinite;
+    }
+    .ppepp-step.completed .step-icon-wrapper {
+        box-shadow: 0 0 0 4px rgba(25, 135, 84, 0.2) !important;
+    }
+    @keyframes pulse-primary {
+        0% { box-shadow: 0 0 0 0 rgba(13, 110, 253, 0.4); }
+        70% { box-shadow: 0 0 0 10px rgba(13, 110, 253, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(13, 110, 253, 0); }
+    }
+    @media (max-width: 768px) {
+        .ppepp-tracker {
+            flex-direction: column;
+            gap: 30px;
+            align-items: flex-start !important;
+            padding-left: 20px;
+        }
+        .ppepp-line {
+            width: 4px !important;
+            height: 100% !important;
+            left: 47px !important;
+            top: 0 !important;
+        }
+        .ppepp-step { 
+            width: 100% !important; 
+            text-align: left !important;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .ppepp-step .step-icon-wrapper {
+            margin-bottom: 0 !important;
+            margin-left: 0 !important;
+            margin-right: 0 !important;
+        }
+        .ppepp-step .step-label {
+            margin-bottom: 0 !important;
+        }
+        .ppepp-step .badge {
+            position: relative !important;
+            top: 0 !important;
+            left: 0 !important;
+            transform: none !important;
+            margin-top: 0 !important;
+            margin-left: 10px !important;
+        }
     }
 </style>
 @endpush
