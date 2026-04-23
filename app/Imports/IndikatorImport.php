@@ -74,16 +74,18 @@ class IndikatorImport implements ToModel, WithHeadingRow, WithValidation, WithMa
                             ->first();
         }
 
-        return new IndikatorKinerja([
-            'kode'             => strtoupper($row['kode']),
-            'nama'             => $row['nama'],
-            'unit_pengukuran'  => $row['unit_pengukuran'],
-            'target_deskripsi' => $row['target_deskripsi'],
-            'target_nilai'     => $row['target_nilai'],
-            'unit_kerja'       => $row['unit_kerja'],
-            'standar_id'       => $standar?->id,
-            'is_aktif'         => true,
-        ]);
+        return IndikatorKinerja::updateOrCreate(
+            ['kode' => strtoupper($row['kode'])],
+            [
+                'nama'             => $row['nama'],
+                'unit_pengukuran'  => $row['unit_pengukuran'],
+                'target_deskripsi' => $row['target_deskripsi'],
+                'target_nilai'     => $row['target_nilai'],
+                'unit_kerja'       => $row['unit_kerja'],
+                'standar_id'       => $standar?->id,
+                'is_aktif'         => true,
+            ]
+        );
     }
 
     public function rules(): array
