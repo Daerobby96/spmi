@@ -170,8 +170,8 @@
                     @else
                         <div class="text-center py-4 text-muted small">
                             <i class="bi bi-exclamation-triangle d-block mb-2"></i>
-                            Indikator Kinerja (TRC) belum didefinisikan.
-                            <br>Pastikan Kode IKU 'TRC-01', 'TRC-02', 'TRC-03' ada di modul Standar.
+                            Indikator Kinerja terkait Lulusan belum didefinisikan.
+                            <br>Pastikan Anda memiliki Indikator dengan kata kunci 'lulusan', 'kerja', 'waktu tunggu', atau 'pendapatan' di modul Standar.
                         </div>
                     @endif
                 </div>
