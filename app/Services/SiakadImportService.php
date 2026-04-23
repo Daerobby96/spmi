@@ -195,8 +195,13 @@ class SiakadImportService
             
         } elseif (preg_match('/(\d{4})/', $judul, $matches)) {
             // 2b. Coba tebak dari 1 tahun tunggal (misal: "2024 Genap")
-            $tahun = $matches[1];
+            // Di Siakad, "2024 Genap" biasanya merujuk pada Tahun Ajaran 2024/2025.
+            // Sesuai konvensi database Anda, "Semester Genap 2024/2025" disimpan dengan Tahun = 2025.
+            $tahunMasehi = intval($matches[1]);
             $semester = str_contains(strtolower($judul), 'ganjil') ? 'ganjil' : 'genap';
+            
+            // Jika Genap, tahun aktual di kalender biasanya bergeser +1 dari tahun awal ajaran
+            $tahun = $semester == 'genap' ? ($tahunMasehi + 1) : $tahunMasehi;
             
             $existing = Periode::where('tahun', $tahun)
                 ->where('semester', $semester)
