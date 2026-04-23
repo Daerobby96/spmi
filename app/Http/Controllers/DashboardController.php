@@ -60,7 +60,7 @@ class DashboardController extends Controller
         ];
 
         if ($periode) {
-            $ppeppStatus['penetapan']   = Standar::count() > 0 || \App\Models\IndikatorKinerja::where('periode_id', $periode->id)->count() > 0;
+            $ppeppStatus['penetapan']   = Standar::count() > 0 || \App\Models\IndikatorKinerja::where('is_aktif', true)->count() > 0;
             $ppeppStatus['pelaksanaan'] = Monitoring::where('periode_id', $periode->id)->count() > 0;
             $ppeppStatus['evaluasi']    = Audit::where('periode_id', $periode->id)->whereIn('status', ['aktif', 'selesai'])->count() > 0;
             $ppeppStatus['pengendalian']= \App\Models\TindakLanjut::whereHas('temuan.audit', fn($q) => $q->where('periode_id', $periode->id))->count() > 0;
