@@ -1,19 +1,36 @@
+# ==============================================================
+#  Root .htaccess - SPMI App Security Hardening
+#  Apache 2.4 Syntax
+# ==============================================================
+
+# ---------------------------------------------------------------
+# 1. Mencegah directory listing
+# ---------------------------------------------------------------
+Options -Indexes -MultiViews
+
 <IfModule mod_rewrite.c>
     RewriteEngine On
 
-    # Mencegah akses ke file sensitif
-    <FilesMatch "^\.env|composer\.(json|lock)|package(-lock)?\.json|phpunit\.xml|vite\.config\.js">
-        Order allow,deny
-        Deny from all
+    # ---------------------------------------------------------------
+    # 2. Blokir akses ke file-file sensitif (Apache 2.4 syntax)
+    # ---------------------------------------------------------------
+    <FilesMatch "(\.env|composer\.(json|lock)|package(-lock)?\.json|phpunit\.xml|vite\.config\.js|\.htpasswd|Dockerfile|docker-compose\.yml)$">
+        Require all denied
     </FilesMatch>
 
-    # Mencegah akses ke folder tersembunyi (seperti .git)
-    RewriteRule ^(\.git|storage|tests|app|bootstrap|config|database|resources|vendor) - [F,L]
+    # ---------------------------------------------------------------
+    # 3. Blokir akses ke folder-folder sistem Laravel
+    # ---------------------------------------------------------------
+    RewriteRule ^(\.git|storage|tests|app|bootstrap|config|database|resources|vendor)(/|$) - [F,L]
 
-    # Redirect semua request ke folder public
+    # ---------------------------------------------------------------
+    # 4. Blokir file yang diawali dengan titik (hidden files)
+    # ---------------------------------------------------------------
+    RewriteRule (^\..*) - [F,L]
+
+    # ---------------------------------------------------------------
+    # 5. Redirect semua request ke folder public
+    # ---------------------------------------------------------------
     RewriteCond %{REQUEST_URI} !^/public/
     RewriteRule ^(.*)$ public/$1 [L]
 </IfModule>
-
-# Mencegah directory listing
-Options -Indexes
