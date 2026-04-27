@@ -60,10 +60,10 @@ class MonitoringController extends Controller
         $stats = [
             'total'      => $indikators->count(),
             'tercapai'   => $indikators->filter(fn($i) => 
-                $i->monitorings->isNotEmpty() && ($i->monitorings->first()->nilai_capaian >= $i->target_nilai)
+                $i->monitorings->isNotEmpty() && $i->monitorings->first()->is_tercapai
             )->count(),
             'tidak'      => $indikators->filter(fn($i) => 
-                $i->monitorings->isNotEmpty() && ($i->monitorings->first()->nilai_capaian < $i->target_nilai)
+                $i->monitorings->isNotEmpty() && !$i->monitorings->first()->is_tercapai
             )->count(),
             'belum_eval' => $indikators->filter(fn($i) => $i->monitorings->isEmpty())->count(),
         ];
@@ -194,7 +194,8 @@ class MonitoringController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Berhasil diperbarui.',
-            'persentase' => number_format($monitoring->persentase_capaian, 1) . '%'
+            'persentase' => number_format($monitoring->persentase_capaian, 1) . '%',
+            'is_tercapai' => $monitoring->is_tercapai
         ]);
     }
 

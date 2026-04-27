@@ -34,7 +34,10 @@ class LaporanController extends Controller
             ],
             'monitoring' => [
                 'total' => Monitoring::when($periode, fn($q) => $q->where('periode_id', $periode->id))->count(),
-                'tercapai' => Evaluasi::where('hasil', 'tercapai')->count(),
+                'tercapai' => Monitoring::when($periode, fn($q) => $q->where('periode_id', $periode->id))
+                    ->get()
+                    ->filter(fn($m) => $m->is_tercapai)
+                    ->count(),
             ],
             'edom' => [
                 'total' => \App\Models\DosenKinerja::when($periode, fn($q) => $q->where('periode_id', $periode->id))->count(),
@@ -84,9 +87,10 @@ class LaporanController extends Controller
             ->get();
 
         $periodes = Periode::orderByDesc('tahun')->get();
-        $hasilEvaluasi = $monitorings->filter(fn($m) => $m->evaluasi)
-            ->groupBy('evaluasi.hasil')
-            ->map(fn($g) => $g->count());
+        $hasilEvaluasi = collect([
+            'tercapai' => $monitorings->filter(fn($m) => $m->is_tercapai)->count(),
+            'tidak_tercapai' => $monitorings->filter(fn($m) => !$m->is_tercapai)->count(),
+        ]);
 
         return view('laporan.monitoring', compact('monitorings', 'periodes', 'periodeId', 'hasilEvaluasi'));
     }
@@ -154,9 +158,10 @@ class LaporanController extends Controller
                     ->when($periodeId, fn($q) => $q->where('periode_id', $periodeId))
                     ->get();
                 $data['periode'] = Periode::find($periodeId);
-                $data['hasilEvaluasi'] = $data['monitorings']->filter(fn($m) => $m->evaluasi)
-                    ->groupBy('evaluasi.hasil')
-                    ->map(fn($g) => $g->count());
+                $data['hasilEvaluasi'] = collect([
+                    'tercapai' => $data['monitorings']->filter(fn($m) => $m->is_tercapai)->count(),
+                    'tidak_tercapai' => $data['monitorings']->filter(fn($m) => !$m->is_tercapai)->count(),
+                ]);
 
                 Setting::clearCache();
                 $data['setting'] = [
@@ -183,7 +188,7 @@ class LaporanController extends Controller
                     'total' => $data['monitorings']->count(),
                     'tercapai' => $data['hasilEvaluasi']->get('tercapai', 0),
                     'tidak_tercapai' => $data['hasilEvaluasi']->get('tidak_tercapai', 0),
-                    'perlu_perhatian' => $data['hasilEvaluasi']->get('perlu_perhatian', 0),
+                    'perlu_perhatian' => 0, // Dihapus karena sudah digabung ke tidak_tercapai/tercapai logic baru
                     'draft' => $data['monitorings']->where('status', 'draft')->count(),
                     'submitted' => $data['monitorings']->where('status', 'submitted')->count(),
                     'verified' => $data['monitorings']->where('status', 'verified')->count(),

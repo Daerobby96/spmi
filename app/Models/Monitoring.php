@@ -44,4 +44,25 @@ class Monitoring extends Model
         if (!$this->indikator || !$this->indikator->target_nilai) return 0;
         return round(($this->nilai_capaian / $this->indikator->target_nilai) * 100, 2);
     }
+
+    public function getIsTercapaiAttribute(): bool
+    {
+        if (!$this->indikator) return false;
+        
+        $target = $this->indikator->target_nilai;
+        $capaian = $this->nilai_capaian;
+        
+        // Cek jika indikator waktu tunggu (semakin kecil semakin baik)
+        if (stripos($this->indikator->nama, 'waktu tunggu') !== false) {
+            return $capaian <= $target;
+        }
+        
+        // Untuk target lain, capaian harus lebih besar atau sama dengan target
+        return $capaian >= $target;
+    }
+
+    public function getStatusKinerjaAttribute(): string
+    {
+        return $this->is_tercapai ? 'Tercapai' : 'Tidak Tercapai';
+    }
 }

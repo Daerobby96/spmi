@@ -137,6 +137,84 @@ class AuditController extends Controller
         return view('audit.show', compact('audit', 'statsTemuan', 'statsChecklist', 'indikators'));
     }
 
+    public function generateChecklist(Audit $audit)
+    {
+        // Ambil indikator yang relevan dengan unit kerja ini
+        $indikators = \App\Models\IndikatorKinerja::where('unit_kerja', $audit->unit_yang_diaudit)
+                                                 ->where('is_aktif', true)
+                                                 ->get();
+
+        if ($indikators->isEmpty()) {
+            $indikators = \App\Models\IndikatorKinerja::where('is_aktif', true)->get();
+        }
+
+        $count = 0;
+        foreach ($indikators as $ind) {
+            $exists = \App\Models\AuditChecklist::where('audit_id', $audit->id)
+                                               ->where('indikator_id', $ind->id)
+                                               ->exists();
+            if (!$exists) {
+                // Cari data monitoring & evaluasi terakhir untuk indikator ini pada periode yang sama
+                $monitoring = \App\Models\Monitoring::with(['evaluasi', 'indikator'])
+                                                   ->where('indikator_id', $ind->id)
+                                                   ->where('periode_id', $audit->periode_id)
+                                                   ->first();
+                
+                $statusDefault = 'belum_diisi';
+                $catatan      = '';
+                $bukti        = '';
+
+                if ($monitoring) {
+                    $bukti = $monitoring->bukti_dokumen;
+                    if ($monitoring->evaluasi && $monitoring->evaluasi->hasil) {
+                        $hasil = $monitoring->evaluasi->hasil;
+                        $catatan = $monitoring->evaluasi->analisa;
+                        
+                        // Mapping hasil evaluasi ke status audit
+                        if ($hasil === 'tercapai') {
+                            $statusDefault = 'sesuai';
+                        } elseif ($hasil === 'tidak_tercapai') {
+                            $statusDefault = 'tidak_sesuai';
+                        } elseif ($hasil === 'perlu_perhatian') {
+                            $statusDefault = 'observasi';
+                        }
+                    } else {
+                        // Jika belum ada evaluasi formal, gunakan is_tercapai dari monitoring
+                        $statusDefault = $monitoring->is_tercapai ? 'sesuai' : 'tidak_sesuai';
+                    }
+                }
+
+                $checklist = \App\Models\AuditChecklist::create([
+                    'audit_id'       => $audit->id,
+                    'indikator_id'   => $ind->id,
+                    'pertanyaan'     => $ind->nama,
+                    'status'         => $statusDefault,
+                    'catatan'        => $catatan,
+                    'bukti_objektif' => $bukti,
+                ]);
+
+                // OTOMATISASI TEMUAN: Jika statusnya Tidak Sesuai, buatkan Temuan formal langsung
+                if ($statusDefault === 'tidak_sesuai') {
+                    \App\Models\Temuan::create([
+                        'audit_id'           => $audit->id,
+                        'audit_checklist_id' => $checklist->id,
+                        'auditor_id'         => $audit->ketua_auditor_id,
+                        'kode_temuan'        => \App\Models\Temuan::generateKode(),
+                        'kategori'           => 'KTS_Minor', // Default kategori untuk auto-generate
+                        'uraian_temuan'      => '[Auto-Generated] ' . ($catatan ?: 'Indikator tidak mencapai target pada periode monitoring.'),
+                        'bukti_objektif'     => $bukti ?: 'Berdasarkan data monitoring sistem.',
+                        'status'             => 'open',
+                        'batas_tindak_lanjut' => now()->addDays(7), // Default 7 hari
+                    ]);
+                }
+
+                $count++;
+            }
+        }
+
+        return back()->with('success', $count . ' item checklist berhasil di-generate otomatis berdasarkan hasil monitoring.');
+    }
+
     public function updateChecklistInline(Request $request)
     {
         $request->validate([

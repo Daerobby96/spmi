@@ -125,8 +125,8 @@
                         <th>Unit Kerja</th>
                         <th class="text-center">Target</th>
                         <th class="text-center">Capaian</th>
-                        <th class="text-center">%</th>
-                        <th class="text-center">Status</th>
+                        <th class="text-center">Kinerja</th>
+                        <th class="text-center">Status Data</th>
                         <th class="text-center">Aksi</th>
                     </tr>
                 </thead>
@@ -152,12 +152,14 @@
                                    placeholder="..."
                                    style="width: 100px; margin: 0 auto;">
                         </td>
-                        <td class="text-center" id="persen-{{ $i->id }}">
+                        <td class="text-center" id="kinerja-{{ $i->id }}">
                             @if($m)
-                                @php $persen = $m->persentase_capaian; @endphp
-                                <span class="badge {{ $persen >= 100 ? 'bg-success' : ($persen >= 80 ? 'bg-warning text-dark' : 'bg-danger') }}">
-                                    {{ number_format($persen, 1) }}%
-                                </span>
+                                @if($m->is_tercapai)
+                                    <span class="badge bg-success">Tercapai</span>
+                                @else
+                                    <span class="badge bg-danger">Tidak Tercapai</span>
+                                @endif
+                                <div class="text-muted small mt-1">{{ number_format($m->persentase_capaian, 1) }}%</div>
                             @else
                                 <span class="text-muted small">-</span>
                             @endif
@@ -282,13 +284,13 @@ document.querySelectorAll('.inline-edit').forEach(el => {
                 this.classList.add('text-success');
                 setTimeout(() => this.classList.remove('text-success'), 1000);
                 
-                // Update percentage cell if needed
-                if (data.persentase) {
-                    const persenCell = document.getElementById(`persen-${indikator_id}`);
-                    if (persenCell) {
-                        const pValue = parseFloat(data.persentase);
-                        const badgeClass = pValue >= 100 ? 'bg-success' : (pValue >= 80 ? 'bg-warning text-dark' : 'bg-danger');
-                        persenCell.innerHTML = `<span class="badge ${badgeClass}">${data.persentase}</span>`;
+                // Update kinerja cell if needed
+                if (data.is_tercapai !== undefined) {
+                    const kinerjaCell = document.getElementById(`kinerja-${indikator_id}`);
+                    if (kinerjaCell) {
+                        const badgeClass = data.is_tercapai ? 'bg-success' : 'bg-danger';
+                        const badgeText = data.is_tercapai ? 'Tercapai' : 'Tidak Tercapai';
+                        kinerjaCell.innerHTML = `<span class="badge ${badgeClass}">${badgeText}</span><div class="text-muted small mt-1">${data.persentase}</div>`;
                     }
                 }
             } else {

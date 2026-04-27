@@ -662,8 +662,8 @@
                         <div class="stat-label">Tidak Tercapai</div>
                     </td>
                     <td>
-                        <div class="stat-value" style="color: #ffc107;">{{ $stats['perlu_perhatian'] }}</div>
-                        <div class="stat-label">Perlu Perhatian</div>
+                        <div class="stat-value" style="color: #6c757d;">{{ $stats['draft'] }}</div>
+                        <div class="stat-label">Belum Diverifikasi</div>
                     </td>
                 </tr>
             </table>
@@ -707,10 +707,10 @@
                         <td>Indikator yang tidak mencapai target</td>
                     </tr>
                     <tr>
-                        <td><span class="badge badge-warning">Perlu Perhatian</span></td>
-                        <td class="text-center">{{ $stats['perlu_perhatian'] }}</td>
-                        <td class="text-center">{{ $persenPerhatian }}%</td>
-                        <td>Indikator yang memerlukan perhatian khusus</td>
+                        <td><span class="badge badge-secondary">Belum Diverifikasi</span></td>
+                        <td class="text-center">{{ $stats['draft'] + $stats['submitted'] }}</td>
+                        <td class="text-center">{{ $stats['total'] > 0 ? round((($stats['draft'] + $stats['submitted']) / $stats['total']) * 100, 1) : 0 }}%</td>
+                        <td>Indikator yang belum diverifikasi oleh admin</td>
                     </tr>
                     <tr>
                         <td><span class="badge badge-secondary">Belum Dievaluasi</span></td>
@@ -779,7 +779,7 @@
                         <th class="text-center" style="width: 12%;">Target</th>
                         <th class="text-center" style="width: 12%;">Capaian</th>
                         <th class="text-center" style="width: 10%;">%</th>
-                        <th class="text-center" style="width: 15%;">Hasil</th>
+                        <th class="text-center" style="width: 15%;">Kinerja</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -806,16 +806,10 @@
                                 @endif
                             </td>
                             <td class="text-center">
-                                @if($m->evaluasi)
-                                    @if($m->evaluasi->hasil === 'tercapai')
-                                        <span class="badge badge-success">Tercapai</span>
-                                    @elseif($m->evaluasi->hasil === 'tidak_tercapai')
-                                        <span class="badge badge-danger">Tidak Tercapai</span>
-                                    @else
-                                        <span class="badge badge-warning">Perlu Perhatian</span>
-                                    @endif
+                                @if($m->is_tercapai)
+                                    <span class="badge badge-success">Tercapai</span>
                                 @else
-                                    <span class="badge badge-secondary">Belum</span>
+                                    <span class="badge badge-danger">Tidak Tercapai</span>
                                 @endif
                             </td>
                         </tr>
@@ -859,15 +853,6 @@
                 Terdapat <strong>{{ $stats['tidak_tercapai'] }} indikator ({{ $persenTidakTercapai }}%)</strong> 
                 yang tidak mencapai target. Indikator-indikator ini memerlukan perhatian serius dan evaluasi 
                 mendalam untuk mengidentifikasi faktor-faktor penyebab ketidakcapaian.
-            </div>
-            @endif
-
-            @if($stats['perlu_perhatian'] > 0)
-            <div class="section-subtitle">3.1.3 Indikator Perlu Perhatian</div>
-            <div class="section-content">
-                Terdapat <strong>{{ $stats['perlu_perhatian'] }} indikator ({{ $persenPerhatian }}%)</strong> 
-                yang memerlukan perhatian khusus. Meskipun belum dikategorikan sebagai tidak tercapai, 
-                indikator-indikator ini menunjukkan tren yang perlu diwaspadai.
             </div>
             @endif
         </div>

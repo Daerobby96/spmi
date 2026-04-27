@@ -122,14 +122,18 @@ class EvaluasiController extends Controller
             'value'         => 'required',
         ]);
 
-        $evaluasi = Evaluasi::updateOrCreate(
-            ['monitoring_id' => $request->monitoring_id],
-            [
-                'evaluator_id'     => Auth::id(),
-                'tanggal_evaluasi' => now(), 
-                $request->field    => $request->value,
-            ]
-        );
+        $evaluasi = Evaluasi::where('monitoring_id', $request->monitoring_id)->first();
+        
+        if (!$evaluasi) {
+            $evaluasi = new Evaluasi();
+            $evaluasi->monitoring_id = $request->monitoring_id;
+            $evaluasi->evaluator_id = Auth::id();
+            $evaluasi->tanggal_evaluasi = now();
+            $evaluasi->hasil = 'perlu_perhatian'; // Default hasil jika baru dibuat lewat analisa
+        }
+        
+        $evaluasi->{$request->field} = $request->value;
+        $evaluasi->save();
 
         $evaluasi->monitoring->update(['status' => 'verified']);
 

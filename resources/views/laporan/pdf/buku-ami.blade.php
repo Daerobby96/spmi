@@ -216,7 +216,7 @@
                     <th width="45%">Nama Indikator</th>
                     <th width="10%">Target</th>
                     <th width="10%">Capaian</th>
-                    <th width="10%">%</th>
+                    <th width="15%">Kinerja</th>
                 </tr>
             </thead>
             <tbody>
@@ -227,7 +227,12 @@
                     <td>{{ $mon->indikator->nama ?? '-' }}</td>
                     <td class="text-center">{{ $mon->indikator->target_nilai ?? '-' }}</td>
                     <td class="text-center">{{ $mon->nilai_capaian }}</td>
-                    <td class="text-center">{{ $mon->persentase_capaian }}%</td>
+                    <td class="text-center">
+                        <span style="color: {{ $mon->is_tercapai ? '#155724' : '#721c24' }}; font-weight: bold;">
+                            {{ $mon->is_tercapai ? 'Tercapai' : 'Tidak Tercapai' }}
+                        </span>
+                        <br><small>({{ $mon->persentase_capaian }}%)</small>
+                    </td>
                 </tr>
                 @empty
                 <tr><td colspan="6" class="text-center">Belum ada data capaian / monitoring yang diinput.</td></tr>

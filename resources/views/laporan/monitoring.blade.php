@@ -142,8 +142,7 @@
                                 <th>Target</th>
                                 <th>Capaian</th>
                                 <th>Periode</th>
-                                <th>Evaluasi</th>
-                                <th>Hasil</th>
+                                <th>Kinerja</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -171,23 +170,10 @@
                                 </td>
                                 <td>{{ $monitoring->periode->tahun ?? '-' }}</td>
                                 <td>
-                                    @if($monitoring->evaluasi)
-                                        <span class="badge bg-info">Sudah</span>
+                                    @if($monitoring->is_tercapai)
+                                        <span class="badge bg-success">Tercapai</span>
                                     @else
-                                        <span class="badge bg-secondary">Belum</span>
-                                    @endif
-                                </td>
-                                <td>
-                                    @if($monitoring->evaluasi)
-                                        @if($monitoring->evaluasi->hasil === 'tercapai')
-                                            <span class="badge bg-success">Tercapai</span>
-                                        @elseif($monitoring->evaluasi->hasil === 'tidak_tercapai')
-                                            <span class="badge bg-danger">Tidak Tercapai</span>
-                                        @else
-                                            <span class="badge bg-warning text-dark">{{ ucfirst($monitoring->evaluasi->hasil) }}</span>
-                                        @endif
-                                    @else
-                                        <span class="text-muted">-</span>
+                                        <span class="badge bg-danger">Tidak Tercapai</span>
                                     @endif
                                 </td>
                             </tr>

@@ -125,12 +125,12 @@
                             <h6 class="mb-0"><i class="bi bi-list-check me-2 text-primary"></i>Checklist Instrumen Audit</h6>
                             <small class="text-muted">Berdasarkan indikator kinerja unit {{ $audit->unit_yang_diaudit }}</small>
                         </div>
-                        @if($audit->checklists->isEmpty())
-                        <form action="{{ route('audit.generate-checklist', $audit) }}" method="POST">
+                        <form action="{{ route('audit.generate-checklist', $audit) }}" method="POST" class="d-inline">
                             @csrf
-                            <button type="submit" class="btn btn-sm btn-primary"><i class="bi bi-magic me-1"></i>Generate Checklist</button>
+                            <button type="submit" class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-magic me-1"></i>{{ $audit->checklists->isEmpty() ? 'Generate Checklist' : 'Sync / Refresh Checklist' }}
+                            </button>
                         </form>
-                        @endif
                     </div>
                     <div class="card-body p-0">
                         <div class="table-responsive">
